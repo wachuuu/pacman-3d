@@ -31,10 +31,21 @@ Place, Fifth Floor, Boston, MA  02110 - 1301  USA
 #include "lodepng.h"
 #include "shaderprogram.h"
 #include "myCube.h"
+#include <iostream>
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
+
 
 float speed_x = 0;//[radiany/s]
 float speed_y = 0;//[radiany/s]
 GLuint tex; //Uchwyt – deklaracja globalna
+
+//tu stworzyc klase obiekt i tam przechowywac tablice
+std::vector<glm::vec4> verts;
+std::vector<glm::vec4> norms;
+std::vector<glm::vec2> texCoords2;
+std::vector<unsigned int> indices;
 
 //Procedura obsługi błędów
 void error_callback(int error, const char* description) {
@@ -96,6 +107,35 @@ GLuint readTexture(const char* filename) {
 }
 
 
+void loadModel(std::string plik) {
+	using namespace std;
+	Assimp::Importer importer;
+	const aiScene* scene = importer.ReadFile(plik,
+		aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_GenSmoothNormals);
+	cout << importer.GetErrorString() << endl;
+
+	aiMesh* mesh = scene->mMeshes[0];
+	for (int i = 0; i < mesh->mNumVertices; i++) {
+		aiVector3D vertex = mesh->mVertices[i];
+
+		verts.push_back(glm::vec4(vertex.x, vertex.y, vertex.z, 1));
+
+		aiVector3D normal = mesh->mNormals[i];
+		norms.push_back(glm::vec4(normal.x, normal.y, normal.z, 0));
+
+		aiVector3D texCoord = mesh->mTextureCoords[0][i];
+		texCoords2.push_back(glm::vec2(texCoord.x, texCoord.y));
+	}
+
+	for (int i = 0; i < mesh->mNumFaces; i++) {
+		aiFace& face = mesh->mFaces[i];
+
+		for (int j = 0; j < face.mNumIndices; j++) {
+			indices.push_back(face.mIndices[j]);
+		}
+	}
+}
+
 //Procedura inicjująca
 void initOpenGLProgram(GLFWwindow* window) {
 	initShaders();
@@ -103,7 +143,9 @@ void initOpenGLProgram(GLFWwindow* window) {
 	glClearColor(0, 0, 0, 1); //Ustaw kolor czyszczenia bufora kolorów
 	glEnable(GL_DEPTH_TEST); //Włącz test głębokości na pikselach
 	glfwSetKeyCallback(window, key_callback);
-	tex = readTexture("bricks.png");
+
+	tex = readTexture("./textures/creeper/AA1.png");
+	loadModel(std::string("./textures/creeper/Minecraft_Creeper.fbx"));
 }
 
 
@@ -122,7 +164,7 @@ void drawScene(GLFWwindow* window, float angle_x, float angle_y) {
 	glm::mat4 M = glm::mat4(1.0f); //Zainicjuj macierz modelu macierzą jednostkową
 	M = glm::rotate(M, angle_y, glm::vec3(0.0f, 1.0f, 0.0f)); //Pomnóż macierz modelu razy macierz obrotu o kąt angle wokół osi Y
 	M = glm::rotate(M, angle_x, glm::vec3(1.0f, 0.0f, 0.0f)); //Pomnóż macierz modelu razy macierz obrotu o kąt angle wokół osi X
-	glm::mat4 V = glm::lookAt(glm::vec3(0.0f, 0.0f, -5.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f)); //Wylicz macierz widoku
+	glm::mat4 V = glm::lookAt(glm::vec3(0.0f, 0.0f, -15.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f)); //Wylicz macierz widoku
 	glm::mat4 P = glm::perspective(glm::radians(50.0f), 1.0f, 1.0f, 50.0f); //Wylicz macierz rzutowania
 
 	//Tablica współrzędnych teksturowania - wklejona do pliku myCube.h
@@ -135,17 +177,18 @@ void drawScene(GLFWwindow* window, float angle_x, float angle_y) {
 	glUniformMatrix4fv(spLambertTextured->u("M"), 1, false, glm::value_ptr(M));
 
 	glEnableVertexAttribArray(spLambertTextured->a("vertex"));
-	glVertexAttribPointer(spLambertTextured->a("vertex"), 4, GL_FLOAT, false, 0, myCubeVertices);
+	glVertexAttribPointer(spLambertTextured->a("vertex"), 4, GL_FLOAT, false, 0, verts.data());
 
 	glEnableVertexAttribArray(spLambertTextured->a("normal"));
-	glVertexAttribPointer(spLambertTextured->a("normal"), 4, GL_FLOAT, false, 0, normals);
+	glVertexAttribPointer(spLambertTextured->a("normal"), 4, GL_FLOAT, false, 0, norms.data());
 
 	glEnableVertexAttribArray(spLambertTextured->a("texCoord"));
-	glVertexAttribPointer(spLambertTextured->a("texCoord"), 2, GL_FLOAT, false, 0, texCoords);
+	glVertexAttribPointer(spLambertTextured->a("texCoord"), 2, GL_FLOAT, false, 0, texCoords2.data());
 
 	glActiveTexture(GL_TEXTURE0); glBindTexture(GL_TEXTURE_2D, tex); glUniform1i(spLambertTextured->u("tex"), 0);
 
-	glDrawArrays(GL_TRIANGLES, 0, myCubeVertexCount);
+	//glDrawArrays(GL_TRIANGLES, 0, myCubeVertexCount);
+	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, indices.data());
 
 	glDisableVertexAttribArray(spLambertTextured->a("vertex"));
 	glDisableVertexAttribArray(spLambertTextured->a("normal"));
