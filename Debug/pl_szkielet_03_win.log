@@ -1,12 +1,4 @@
-﻿  cube.cpp
-  lodepng.cpp
-  main_file.cpp
-C:\Users\gabwa\Desktop\Files\Studia\SEM4\GKiW\Projekt\pacman\main_file.cpp(153,37): warning C4244: "+=": konwersja z "double" do "float", możliwa utrata danych
-C:\Users\gabwa\Desktop\Files\Studia\SEM4\GKiW\Projekt\pacman\main_file.cpp(154,37): warning C4244: "+=": konwersja z "double" do "float", możliwa utrata danych
-  model.cpp
-  shaderprogram.cpp
-  sphere.cpp
-  teapot.cpp
-  torus.cpp
-  Generowanie kodu...
+﻿  main_file.cpp
+C:\Users\gabwa\Desktop\Files\Studia\SEM4\GKiW\Projekt\pacman\main_file.cpp(194,37): warning C4244: "+=": konwersja z "double" do "float", możliwa utrata danych
+C:\Users\gabwa\Desktop\Files\Studia\SEM4\GKiW\Projekt\pacman\main_file.cpp(195,37): warning C4244: "+=": konwersja z "double" do "float", możliwa utrata danych
   pl_szkielet_03_win.vcxproj -> C:\Users\gabwa\Desktop\Files\Studia\SEM4\GKiW\Projekt\pacman\Debug\pl_szkielet_03_win.exe
