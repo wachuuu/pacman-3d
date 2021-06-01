@@ -122,7 +122,7 @@ float myCubeColors[]={
 			};
 
 
-float texCoords[] = {
+float myCubeTexCoords[] = {
 				//sciana 1
 				1.0f, 0.0f,	
 				0.0f, 1.0f,   
@@ -172,7 +172,7 @@ float texCoords[] = {
 				0.0f, 1.0f,
 };
 
-float normals[] = {
+float myCubeNormals[] = {
 	//sciana 1
 	0.0f,0.0f,-1.0f,0.0f,
 	0.0f,0.0f,-1.0f,0.0f,

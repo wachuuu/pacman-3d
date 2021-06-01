@@ -1,0 +1,2 @@
+C:\Users\stach\Desktop\projekt\pacman-3d\Debug\pl_szkielet_03_win.exe
+C:\Users\stach\Desktop\projekt\pacman-3d\Debug\pl_szkielet_03_win.pdb
