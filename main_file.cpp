@@ -37,8 +37,8 @@ Place, Fifth Floor, Boston, MA  02110 - 1301  USA
 #include <assimp/postprocess.h>
 
 
-float speed_x = 0;//[radiany/s]
-float speed_y = 0;//[radiany/s]
+const float speed = 1; // prędkość postaci
+std::string direction;
 GLuint tex, tex_brick; //Uchwyt – deklaracja globalna
 
 //tu stworzyc klase obiekt i tam przechowywac tablice
@@ -56,12 +56,15 @@ int mapa[mapa_wys][mapa_szer] = { {1,1,1,1,1,1,1,1},
 								{1,0,0,0,0,0,0,1},
 								{1,0,0,0,0,0,0,1},
 								{1,1,1,1,1,1,1,1} };
+glm::mat4 position;
+float position_x = 1;
+float position_z = 1;
 
 //Procedura obsługi błędów
 void error_callback(int error, const char* description) {
 	fputs(description, stderr);
 }
-
+bool go_left, go_right, go_up, go_down;
 void key_callback(
 	GLFWwindow* window,
 	int key,
@@ -71,25 +74,27 @@ void key_callback(
 ) {
 	if (action == GLFW_PRESS) {
 		if (key == GLFW_KEY_LEFT) {
-			speed_y = -PI;
+			go_left = true;
 		}
 		if (key == GLFW_KEY_RIGHT) {
-			speed_y = PI;
+			go_right = true;
 		}
 		if (key == GLFW_KEY_UP) {
-			speed_x = -PI;
+			go_up = true;
 		}
 		if (key == GLFW_KEY_DOWN) {
-			speed_x = PI;
+			go_down = true;
 		}
 	}
 	if (action == GLFW_RELEASE) {
-		if (key == GLFW_KEY_LEFT || key == GLFW_KEY_RIGHT) {
-			speed_y = 0;
-		}
-		if (key == GLFW_KEY_UP || key == GLFW_KEY_DOWN) {
-			speed_x = 0;
-		}
+		if (key == GLFW_KEY_LEFT)
+			go_left = false;
+		if (key == GLFW_KEY_RIGHT)
+			go_right = false;
+		if (key == GLFW_KEY_UP)
+			go_up = false;
+		if (key == GLFW_KEY_DOWN)
+			go_down = false;
 	}
 }
 
@@ -156,6 +161,8 @@ void initOpenGLProgram(GLFWwindow* window) {
 	tex = readTexture("./textures/creeper/AA1.png");
 	tex_brick = readTexture("bricks.png");
 	loadModel(std::string("./textures/creeper/Minecraft_Creeper.fbx"));
+	position = glm::translate(glm::mat4(1.0f), glm::vec3(1, 0, 1));
+	position = glm::scale(position, glm::vec3(0.25f, 0.25f, 0.25f));
 }
 
 
@@ -185,40 +192,107 @@ void drawBrick(glm::mat4 M)
 	glDisableVertexAttribArray(spLambertTextured->a("texCoord"));
 }
 
+void move()
+{
+	if (direction == "up")
+	{
+		if (mapa[int(position_x)][int(position_z) + 1] != 1)
+		{
+			position_z += speed;
+			position = glm::translate(position, glm::vec3(0, 0, speed));
+			std::cout << position_x << " " << position_z << std::endl;
+		}
+	}
+	if (direction == "down")
+	{
+		if (mapa[int(position_x)][int(position_z) - 1] != 1)
+		{
+			position_z -= speed;
+			position = glm::translate(position, glm::vec3(0, 0, -speed));
+		}
+	}
+	if (direction == "left")
+	{
+		if (mapa[int(position_x) + 1][int(position_z)] != 1)
+		{
+			position_x += speed;
+			position = glm::translate(position, glm::vec3(speed, 0, 0));
+		}
+	}
+	if (direction == "right")
+	{
+		if (mapa[int(position_x) - 1][int(position_z)] != 1)
+		{
+			position_x -= speed;
+			position = glm::translate(position, glm::vec3(-speed, 0, 0));
+		}
+	}
+	int licznik = 0;
+	if (go_right)
+		licznik++;
+	if (go_left)
+		licznik++;
+	if (go_up)
+		licznik++;
+	if (go_down)
+		licznik++;
+	if (licznik == 1)
+	{
+		if (floorf(position_x) == position_x) //sprawdzenie czy float ma wartość całkowitą
+		{
+			if (go_left && mapa[int(position_x)+ 1][int(position_z)] != 1)
+			{
+				direction = "left";
+			}
+			if (go_right && mapa[int(position_x - 1)][int(position_z)] != 1)
+			{
+				direction = "right";
+			}
+		}
+		if (floorf(position_z) == position_z) //sprawdzenie czy float ma wartość całkowitą
+		{
+			if (go_up && mapa[int(position_x)][int(position_z)+1] != 1)
+			{
+				direction = "up";
+			}
+			if (go_down && mapa[int(position_x)][int(position_z)-1] != 1)
+			{
+				direction = "down";
+			}
+		}
+	}
+}
+
 //Procedura rysująca zawartość sceny
-void drawScene(GLFWwindow* window, float angle_x, float angle_y) {
+void drawScene(GLFWwindow* window) {
 	//************Tutaj umieszczaj kod rysujący obraz******************l
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //Wyczyść bufor koloru i bufor głębokości
 
-	glm::mat4 M = glm::mat4(1.0f); //Zainicjuj macierz modelu macierzą jednostkową
 	//M = glm::rotate(M, angle_y, glm::vec3(0.0f, 1.0f, 0.0f)); //Pomnóż macierz modelu razy macierz obrotu o kąt angle wokół osi Y
 	//M = glm::rotate(M, angle_x, glm::vec3(1.0f, 0.0f, 0.0f)); //Pomnóż macierz modelu razy macierz obrotu o kąt angle wokół osi X
-	glm::mat4 V = glm::lookAt(glm::vec3(5.0f, 5.0f, -5.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f)); //Wylicz macierz widoku
+	glm::mat4 V = glm::lookAt(glm::vec3(0.0f, 15.0f, -5.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f)); //Wylicz macierz widoku
 	glm::mat4 P = glm::perspective(glm::radians(50.0f), 1.0f, 1.0f, 50.0f); //Wylicz macierz rzutowania
 
 	//Tablica współrzędnych teksturowania - wklejona do pliku myCube.h
 	//Tablica wektorow normalnych - wklejona do pliku myCube.h
 
-	//glm::translate(M4, glm::vec3(2, 0, 0));
-	//glm::scale(M4, glm::vec3(0.25f, 0.25f, 0.25f));
-
-	M = glm::scale(M, glm::vec3(0.25f, 0.25f, 0.25f));
+	position = glm::scale(position, glm::vec3(4.0f, 4.0f, 4.0f));
+	move();
+	position = glm::scale(position, glm::vec3(0.25f, 0.25f, 0.25f));
+	
 
 	spLambertTextured->use();
 	glUniformMatrix4fv(spLambertTextured->u("P"), 1, false, glm::value_ptr(P));
 	glUniformMatrix4fv(spLambertTextured->u("V"), 1, false, glm::value_ptr(V));
-	glUniformMatrix4fv(spLambertTextured->u("M"), 1, false, glm::value_ptr(M));
-	glm::mat4 M_brick = glm::mat4(1.0f);
 	for (int i = 0; i < mapa_wys; i++)
 	{
 		for (int j = 0; j < mapa_szer; j++)
 		{
 			if (mapa[i][j] == 1)
-				//drawBrick(glm::scale(glm::translate(glm::mat4(1.0f), glm::vec3(i, 0, j)), glm::vec3(0.5f, 0.5f, 0.5f)));
-				int a = 0;
+				drawBrick(glm::scale(glm::translate(glm::mat4(1.0f), glm::vec3(i, 0, j)), glm::vec3(0.5f, 0.5f, 0.5f)));
 		}
 	}
-	//drawBrick(M);
+	glUniformMatrix4fv(spLambertTextured->u("M"), 1, false, glm::value_ptr(position));
 
 	glEnableVertexAttribArray(spLambertTextured->a("vertex"));
 	glVertexAttribPointer(spLambertTextured->a("vertex"), 4, GL_FLOAT, false, 0, verts.data());
@@ -253,7 +327,7 @@ int main(void)
 		exit(EXIT_FAILURE);
 	}
 
-	window = glfwCreateWindow(500, 500, "OpenGL", NULL, NULL);  //Utwórz okno 500x500 o tytule "OpenGL" i kontekst OpenGL.
+	window = glfwCreateWindow(1280, 720, "Pac-Man 3D", NULL, NULL);  //Utwórz okno 500x500 o tytule "OpenGL" i kontekst OpenGL.
 
 	if (!window) //Jeżeli okna nie udało się utworzyć, to zamknij program
 	{
@@ -278,10 +352,8 @@ int main(void)
 	glfwSetTime(0); //Wyzeruj licznik czasu
 	while (!glfwWindowShouldClose(window)) //Tak długo jak okno nie powinno zostać zamknięte
 	{
-		angle_x += speed_x * glfwGetTime(); //Oblicz kąt o jaki obiekt obrócił się podczas poprzedniej klatki
-		angle_y += speed_y * glfwGetTime(); //Oblicz kąt o jaki obiekt obrócił się podczas poprzedniej klatki
 		glfwSetTime(0); //Wyzeruj licznik czasu
-		drawScene(window, angle_x, angle_y); //Wykonaj procedurę rysującą
+		drawScene(window); //Wykonaj procedurę rysującą
 		glfwPollEvents(); //Wykonaj procedury callback w zalezności od zdarzeń jakie zaszły.
 	}
 

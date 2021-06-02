@@ -1,7 +1,5 @@
 ﻿  main_file.cpp
-C:\Users\stach\Desktop\projekt\pacman-3d\main_file.cpp(127,20): warning C4018: "<": niezgodność typu ze znakiem/bez znaku
-C:\Users\stach\Desktop\projekt\pacman-3d\main_file.cpp(139,20): warning C4018: "<": niezgodność typu ze znakiem/bez znaku
-C:\Users\stach\Desktop\projekt\pacman-3d\main_file.cpp(142,21): warning C4018: "<": niezgodność typu ze znakiem/bez znaku
-C:\Users\stach\Desktop\projekt\pacman-3d\main_file.cpp(281,37): warning C4244: "+=": konwersja z "double" do "float", możliwa utrata danych
-C:\Users\stach\Desktop\projekt\pacman-3d\main_file.cpp(282,37): warning C4244: "+=": konwersja z "double" do "float", możliwa utrata danych
+C:\Users\stach\Desktop\projekt\pacman-3d\main_file.cpp(132,20): warning C4018: "<": niezgodność typu ze znakiem/bez znaku
+C:\Users\stach\Desktop\projekt\pacman-3d\main_file.cpp(144,20): warning C4018: "<": niezgodność typu ze znakiem/bez znaku
+C:\Users\stach\Desktop\projekt\pacman-3d\main_file.cpp(147,21): warning C4018: "<": niezgodność typu ze znakiem/bez znaku
   pl_szkielet_03_win.vcxproj -> C:\Users\stach\Desktop\projekt\pacman-3d\Debug\pl_szkielet_03_win.exe
