@@ -1,90 +1,37 @@
-/*
-Niniejszy program jest wolnym oprogramowaniem; możesz go
-rozprowadzać dalej i / lub modyfikować na warunkach Powszechnej
-Licencji Publicznej GNU, wydanej przez Fundację Wolnego
-Oprogramowania - według wersji 2 tej Licencji lub(według twojego
-wyboru) którejś z późniejszych wersji.
-
-Niniejszy program rozpowszechniany jest z nadzieją, iż będzie on
-użyteczny - jednak BEZ JAKIEJKOLWIEK GWARANCJI, nawet domyślnej
-gwarancji PRZYDATNOŚCI HANDLOWEJ albo PRZYDATNOŚCI DO OKREŚLONYCH
-ZASTOSOWAŃ.W celu uzyskania bliższych informacji sięgnij do
-Powszechnej Licencji Publicznej GNU.
-
-Z pewnością wraz z niniejszym programem otrzymałeś też egzemplarz
-Powszechnej Licencji Publicznej GNU(GNU General Public License);
-jeśli nie - napisz do Free Software Foundation, Inc., 59 Temple
-Place, Fifth Floor, Boston, MA  02110 - 1301  USA
-*/
-
 #define GLM_FORCE_RADIANS
 
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
-#include <glm/glm.hpp>
-#include <glm/gtc/type_ptr.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <stdlib.h>
-#include <stdio.h>
-#include "constants.h"
-#include "allmodels.h"
-#include "lodepng.h"
-#include "shaderprogram.h"
-#include "myCube.h"
-#include <iostream>
-#include <assimp/Importer.hpp>
-#include <assimp/scene.h>
-#include <assimp/postprocess.h>
+#include "includes.h"
+#include "wall.h"
+#include "creeper.h"
+#include "map.h"
+
+extern float wallSegmentVertices[];
+extern float wallSegmentTexCoords[];
+extern float wallSegmentNormals[];
+
+WallSegment wallSegment;	// Obiekt do parametrów segmentu ściany
+Creeper creeper;
 
 
-const float speed = 1; // prędkość postaci
-std::string direction;
-GLuint tex, tex_brick; //Uchwyt – deklaracja globalna
+//zmienne globalne
+bool go_left, go_right, go_up, go_down;		// wydarzenie zmieniajace kierunek
 
-//tu stworzyc klase obiekt i tam przechowywac tablice
-std::vector<glm::vec4> verts;
-std::vector<glm::vec4> norms;
-std::vector<glm::vec2> texCoords2;
-std::vector<unsigned int> indices;
-const int mapa_wys = 8;
-const int mapa_szer = 8;
-int mapa[mapa_wys][mapa_szer] = { {1,1,1,1,1,1,1,1},
-								{1,0,0,0,0,0,0,1},
-								{1,0,0,0,0,0,0,1},
-								{1,0,0,0,0,0,0,1},
-								{1,0,0,0,0,0,0,1},
-								{1,0,0,0,0,0,0,1},
-								{1,0,0,0,0,0,0,1},
-								{1,1,1,1,1,1,1,1} };
-glm::mat4 position;
-float position_x = 1;
-float position_z = 1;
 
 //Procedura obsługi błędów
 void error_callback(int error, const char* description) {
 	fputs(description, stderr);
 }
-bool go_left, go_right, go_up, go_down;
-void key_callback(
-	GLFWwindow* window,
-	int key,
-	int scancode,
-	int action,
-	int mod
-) {
+
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod ) {
 	if (action == GLFW_PRESS) {
-		if (key == GLFW_KEY_LEFT) {
+		if (key == GLFW_KEY_LEFT) 
 			go_left = true;
-		}
-		if (key == GLFW_KEY_RIGHT) {
+		if (key == GLFW_KEY_RIGHT) 
 			go_right = true;
-		}
-		if (key == GLFW_KEY_UP) {
+		if (key == GLFW_KEY_UP) 
 			go_up = true;
-		}
-		if (key == GLFW_KEY_DOWN) {
+		if (key == GLFW_KEY_DOWN) 
 			go_down = true;
-		}
 	}
 	if (action == GLFW_RELEASE) {
 		if (key == GLFW_KEY_LEFT)
@@ -98,136 +45,41 @@ void key_callback(
 	}
 }
 
-GLuint readTexture(const char* filename) {
-	GLuint tex;
-	glActiveTexture(GL_TEXTURE0);
-
-	//Wczytanie do pamięci komputera
-	std::vector<unsigned char> image;   //Alokuj wektor do wczytania obrazka
-	unsigned width, height;   //Zmienne do których wczytamy wymiary obrazka
-	//Wczytaj obrazek
-	unsigned error = lodepng::decode(image, width, height, filename);
-
-	//Import do pamięci karty graficznej
-	glGenTextures(1, &tex); //Zainicjuj jeden uchwyt
-	glBindTexture(GL_TEXTURE_2D, tex); //Uaktywnij uchwyt
-	//Wczytaj obrazek do pamięci KG skojarzonej z uchwytem
-	glTexImage2D(GL_TEXTURE_2D, 0, 4, width, height, 0,
-		GL_RGBA, GL_UNSIGNED_BYTE, (unsigned char*)image.data());
-
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-	return tex;
-}
-
-void loadModel(std::string plik) {
-	using namespace std;
-	Assimp::Importer importer;
-	const aiScene* scene = importer.ReadFile(plik,
-		aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_GenSmoothNormals);
-	cout << importer.GetErrorString() << endl;
-
-	aiMesh* mesh = scene->mMeshes[0];
-	for (int i = 0; i < mesh->mNumVertices; i++) {
-		aiVector3D vertex = mesh->mVertices[i];
-
-		verts.push_back(glm::vec4(vertex.x, vertex.y, vertex.z, 1));
-
-		aiVector3D normal = mesh->mNormals[i];
-		norms.push_back(glm::vec4(normal.x, normal.y, normal.z, 0));
-
-		aiVector3D texCoord = mesh->mTextureCoords[0][i];
-		texCoords2.push_back(glm::vec2(texCoord.x, texCoord.y));
-	}
-
-	for (int i = 0; i < mesh->mNumFaces; i++) {
-		aiFace& face = mesh->mFaces[i];
-
-		for (int j = 0; j < face.mNumIndices; j++) {
-			indices.push_back(face.mIndices[j]);
-		}
-	}
-}
 
 //Procedura inicjująca
 void initOpenGLProgram(GLFWwindow* window) {
 	initShaders();
-	//************Tutaj umieszczaj kod, który należy wykonać raz, na początku programu************
 	glClearColor(0, 0, 0, 1); //Ustaw kolor czyszczenia bufora kolorów
 	glEnable(GL_DEPTH_TEST); //Włącz test głębokości na pikselach
 	glfwSetKeyCallback(window, key_callback);
 
-	tex = readTexture("./textures/creeper/AA1.png");
-	tex_brick = readTexture("bricks.png");
-	loadModel(std::string("./textures/creeper/Minecraft_Creeper.fbx"));
-	position = glm::translate(glm::mat4(1.0f), glm::vec3(1, 0, 1));
-	position = glm::scale(position, glm::vec3(0.25f, 0.25f, 0.25f));
+	//wczytanie tekstury ścian
+	wallSegment.readTexture("./textures/bricks/bricks.png");
+	creeper.readTexture("./textures/creeper/AA1.png");
+	creeper.loadModel(std::string("./textures/creeper/Minecraft_Creeper.fbx"));
+	
+	//loadModel(std::string("./textures/creeper/Minecraft_Creeper.fbx"));
+
+	creeper.position = glm::translate(glm::mat4(1.0f), glm::vec3(1, 0, 1));
+	creeper.position = glm::scale(creeper.position, glm::vec3(0.25f, 0.25f, 0.25f));
 }
 
 
 //Zwolnienie zasobów zajętych przez program
 void freeOpenGLProgram(GLFWwindow* window) {
 	freeShaders();
-	//************Tutaj umieszczaj kod, który należy wykonać po zakończeniu pętli głównej************
-	glDeleteTextures(1, &tex);
-	glDeleteTextures(1, &tex_brick);
+
+	// zwalnianie tekstur
+	glDeleteTextures(1, &creeper.texture);
+	glDeleteTextures(1, &wallSegment.texture);
 }
 
-void drawBrick(glm::mat4 M)
-{
-	glUniformMatrix4fv(spLambertTextured->u("M"), 1, false, glm::value_ptr(M));
-	glEnableVertexAttribArray(spLambertTextured->a("vertex"));
-	glVertexAttribPointer(spLambertTextured->a("vertex"), 4, GL_FLOAT, false, 0, myCubeVertices);
-	glEnableVertexAttribArray(spLambertTextured->a("normal"));
-	glVertexAttribPointer(spLambertTextured->a("normal"), 4, GL_FLOAT, false, 0, myCubeNormals);
-	glEnableVertexAttribArray(spLambertTextured->a("texCoord"));
-	glVertexAttribPointer(spLambertTextured->a("texCoord"), 2, GL_FLOAT, false, 0, myCubeTexCoords);
-
-	glActiveTexture(GL_TEXTURE0); glBindTexture(GL_TEXTURE_2D, tex_brick); glUniform1i(spLambertTextured->u("tex"), 0);
-
-	glDrawArrays(GL_TRIANGLES, 0, myCubeVertexCount);
-	glDisableVertexAttribArray(spLambertTextured->a("vertex"));
-	glDisableVertexAttribArray(spLambertTextured->a("normal"));
-	glDisableVertexAttribArray(spLambertTextured->a("texCoord"));
-}
 
 void move()
 {
-	if (direction == "up")
-	{
-		if (mapa[int(position_x)][int(position_z) + 1] != 1)
-		{
-			position_z += speed;
-			position = glm::translate(position, glm::vec3(0, 0, speed));
-			std::cout << position_x << " " << position_z << std::endl;
-		}
-	}
-	if (direction == "down")
-	{
-		if (mapa[int(position_x)][int(position_z) - 1] != 1)
-		{
-			position_z -= speed;
-			position = glm::translate(position, glm::vec3(0, 0, -speed));
-		}
-	}
-	if (direction == "left")
-	{
-		if (mapa[int(position_x) + 1][int(position_z)] != 1)
-		{
-			position_x += speed;
-			position = glm::translate(position, glm::vec3(speed, 0, 0));
-		}
-	}
-	if (direction == "right")
-	{
-		if (mapa[int(position_x) - 1][int(position_z)] != 1)
-		{
-			position_x -= speed;
-			position = glm::translate(position, glm::vec3(-speed, 0, 0));
-		}
-	}
+	creeper.position = glm::scale(creeper.position, glm::vec3(4.0f, 4.0f, 4.0f));
 	int licznik = 0;
+
 	if (go_right)
 		licznik++;
 	if (go_left)
@@ -236,77 +88,107 @@ void move()
 		licznik++;
 	if (go_down)
 		licznik++;
-	if (licznik == 1)
-	{
-		if (floorf(position_x) == position_x) //sprawdzenie czy float ma wartość całkowitą
+
+	if (licznik == 1) {
+		if (floorf(creeper.position_x) == creeper.position_x) //sprawdzenie czy float ma wartość całkowitą
 		{
-			if (go_left && mapa[int(position_x)+ 1][int(position_z)] != 1)
+			if (go_left && map[int(creeper.position_x)+ 1][int(creeper.position_z)] != 1)
 			{
-				direction = "left";
+				creeper.direction = "left";
 			}
-			if (go_right && mapa[int(position_x - 1)][int(position_z)] != 1)
+			if (go_right && map[int(creeper.position_x - 1)][int(creeper.position_z)] != 1)
 			{
-				direction = "right";
+				creeper.direction = "right";
 			}
 		}
-		if (floorf(position_z) == position_z) //sprawdzenie czy float ma wartość całkowitą
+		if (floorf(creeper.position_z) == creeper.position_z) //sprawdzenie czy float ma wartość całkowitą
 		{
-			if (go_up && mapa[int(position_x)][int(position_z)+1] != 1)
+			if (go_up && map[int(creeper.position_x)][int(creeper.position_z)+1] != 1)
 			{
-				direction = "up";
+				creeper.direction = "up";
 			}
-			if (go_down && mapa[int(position_x)][int(position_z)-1] != 1)
+			if (go_down && map[int(creeper.position_x)][int(creeper.position_z)-1] != 1)
 			{
-				direction = "down";
+				creeper.direction = "down";
 			}
 		}
 	}
+
+	if (creeper.direction == "up")
+	{
+		if (map[int(creeper.position_x)][int(creeper.position_z) + 1] != 1)
+		{
+			creeper.position_z += creeper.movingSpeed;
+			creeper.position = glm::translate(creeper.position, glm::vec3(0, 0, creeper.movingSpeed));
+			std::cout << creeper.position_x << " " << creeper.position_z << std::endl;
+		}
+	}
+	if (creeper.direction == "down")
+	{
+		if (map[int(creeper.position_x)][int(creeper.position_z) - 1] != 1)
+		{
+			creeper.position_z -= creeper.movingSpeed;
+			creeper.position = glm::translate(creeper.position, glm::vec3(0, 0, -creeper.movingSpeed));
+		}
+	}
+	if (creeper.direction == "left")
+	{
+		if (map[int(creeper.position_x) + 1][int(creeper.position_z)] != 1)
+		{
+			creeper.position_x += creeper.movingSpeed;
+			creeper.position = glm::translate(creeper.position, glm::vec3(creeper.movingSpeed, 0, 0));
+		}
+	}
+	if (creeper.direction == "right")
+	{
+		if (map[int(creeper.position_x) - 1][int(creeper.position_z)] != 1)
+		{
+			creeper.position_x -= creeper.movingSpeed;
+			creeper.position = glm::translate(creeper.position, glm::vec3(-creeper.movingSpeed, 0, 0));
+		}
+	}
+	creeper.position = glm::scale(creeper.position, glm::vec3(0.25f, 0.25f, 0.25f));
 }
 
-//Procedura rysująca zawartość sceny
 void drawScene(GLFWwindow* window) {
-	//************Tutaj umieszczaj kod rysujący obraz******************l
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //Wyczyść bufor koloru i bufor głębokości
+
 
 	//M = glm::rotate(M, angle_y, glm::vec3(0.0f, 1.0f, 0.0f)); //Pomnóż macierz modelu razy macierz obrotu o kąt angle wokół osi Y
 	//M = glm::rotate(M, angle_x, glm::vec3(1.0f, 0.0f, 0.0f)); //Pomnóż macierz modelu razy macierz obrotu o kąt angle wokół osi X
 	glm::mat4 V = glm::lookAt(glm::vec3(0.0f, 15.0f, -5.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f)); //Wylicz macierz widoku
 	glm::mat4 P = glm::perspective(glm::radians(50.0f), 1.0f, 1.0f, 50.0f); //Wylicz macierz rzutowania
 
-	//Tablica współrzędnych teksturowania - wklejona do pliku myCube.h
-	//Tablica wektorow normalnych - wklejona do pliku myCube.h
 
-	position = glm::scale(position, glm::vec3(4.0f, 4.0f, 4.0f));
 	move();
-	position = glm::scale(position, glm::vec3(0.25f, 0.25f, 0.25f));
 	
 
 	spLambertTextured->use();
 	glUniformMatrix4fv(spLambertTextured->u("P"), 1, false, glm::value_ptr(P));
 	glUniformMatrix4fv(spLambertTextured->u("V"), 1, false, glm::value_ptr(V));
-	for (int i = 0; i < mapa_wys; i++)
+	for (int i = 0; i < map_height; i++)
 	{
-		for (int j = 0; j < mapa_szer; j++)
+		for (int j = 0; j < map_width; j++)
 		{
-			if (mapa[i][j] == 1)
-				drawBrick(glm::scale(glm::translate(glm::mat4(1.0f), glm::vec3(i, 0, j)), glm::vec3(0.5f, 0.5f, 0.5f)));
+			if (map[i][j] == 1)
+				wallSegment.drawSegment(glm::scale(glm::translate(
+				glm::mat4(1.0f), glm::vec3(i, 0, j)), glm::vec3(0.5f, 0.5f, 0.5f)));
 		}
 	}
-	glUniformMatrix4fv(spLambertTextured->u("M"), 1, false, glm::value_ptr(position));
+	glUniformMatrix4fv(spLambertTextured->u("M"), 1, false, glm::value_ptr(creeper.position));
 
 	glEnableVertexAttribArray(spLambertTextured->a("vertex"));
-	glVertexAttribPointer(spLambertTextured->a("vertex"), 4, GL_FLOAT, false, 0, verts.data());
+	glVertexAttribPointer(spLambertTextured->a("vertex"), 4, GL_FLOAT, false, 0, creeper.vertexes.data());
 
 	glEnableVertexAttribArray(spLambertTextured->a("normal"));
-	glVertexAttribPointer(spLambertTextured->a("normal"), 4, GL_FLOAT, false, 0, norms.data());
+	glVertexAttribPointer(spLambertTextured->a("normal"), 4, GL_FLOAT, false, 0, creeper.normals.data());
 
 	glEnableVertexAttribArray(spLambertTextured->a("texCoord"));
-	glVertexAttribPointer(spLambertTextured->a("texCoord"), 2, GL_FLOAT, false, 0, texCoords2.data());
+	glVertexAttribPointer(spLambertTextured->a("texCoord"), 2, GL_FLOAT, false, 0, creeper.texCoords.data());
 
-	glActiveTexture(GL_TEXTURE0); glBindTexture(GL_TEXTURE_2D, tex); glUniform1i(spLambertTextured->u("tex"), 0);
+	glActiveTexture(GL_TEXTURE0); glBindTexture(GL_TEXTURE_2D, creeper.texture); glUniform1i(spLambertTextured->u("tex"), 0);
 
-	//glDrawArrays(GL_TRIANGLES, 0, myCubeVertexCount);
-	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, indices.data());
+	glDrawElements(GL_TRIANGLES, creeper.indices.size(), GL_UNSIGNED_INT, creeper.indices.data());
 
 	glDisableVertexAttribArray(spLambertTextured->a("vertex"));
 	glDisableVertexAttribArray(spLambertTextured->a("normal"));
@@ -318,7 +200,10 @@ void drawScene(GLFWwindow* window) {
 
 int main(void)
 {
-	GLFWwindow* window; //Wskaźnik na obiekt reprezentujący okno
+	GLFWwindow* window;		// Wskaźnik na obiekt reprezentujący okno
+	wallSegment = WallSegment();		// Inicjalizacja obiektu WallSegment i kopia do zmiennej globalnej
+	creeper = Creeper();
+
 
 	glfwSetErrorCallback(error_callback);//Zarejestruj procedurę obsługi błędów
 
