@@ -3,13 +3,19 @@
 
 #include "includes.h"
 
+
 class WallSegment {
 public:
+	// textura modelu
 	GLuint texture;
+
+	// liczba wierzcho³ków w modelu
 	int wallSegmentCount = 36;
 
+	// za³adowanie tekstury
 	void readTexture(const char* filename);
 
+	// rysowanie modelu
 	void drawSegment(glm::mat4 M);
 };
 

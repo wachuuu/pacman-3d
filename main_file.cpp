@@ -5,19 +5,18 @@
 #include "creeper.h"
 #include "map.h"
 
+
 extern float wallSegmentVertices[];
 extern float wallSegmentTexCoords[];
 extern float wallSegmentNormals[];
 
-WallSegment wallSegment;	// Obiekt do parametrów segmentu ściany
-Creeper creeper;
+WallSegment wallSegment;	// Obiekt segmentu ściany
+Creeper creeper;			// Obiekt głównej postaci
 
-
-//zmienne globalne
 bool go_left, go_right, go_up, go_down;		// wydarzenie zmieniajace kierunek
+float window_width = 1280;
+float window_height = 720;
 
-
-//Procedura obsługi błędów
 void error_callback(int error, const char* description) {
 	fputs(description, stderr);
 }
@@ -45,8 +44,6 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	}
 }
 
-
-//Procedura inicjująca
 void initOpenGLProgram(GLFWwindow* window) {
 	initShaders();
 	glClearColor(0, 0, 0, 1); //Ustaw kolor czyszczenia bufora kolorów
@@ -56,14 +53,12 @@ void initOpenGLProgram(GLFWwindow* window) {
 	//wczytanie tekstury ścian
 	wallSegment.readTexture("./textures/bricks/bricks.png");
 	creeper.readTexture("./textures/creeper/AA1.png");
-	creeper.loadModel(std::string("./textures/creeper/Minecraft_Creeper.fbx"));
-	
-	//loadModel(std::string("./textures/creeper/Minecraft_Creeper.fbx"));
+	creeper.loadModel("./textures/creeper/Minecraft_Creeper.fbx");
 
-	creeper.position = glm::translate(glm::mat4(1.0f), glm::vec3(1, 0, 1));
+	// skalowanie rozmiaru modelu
+	creeper.position = glm::translate(glm::mat4(1.0f), glm::vec3(1.0f, 0.0f, 1.0f));
 	creeper.position = glm::scale(creeper.position, glm::vec3(0.25f, 0.25f, 0.25f));
 }
-
 
 //Zwolnienie zasobów zajętych przez program
 void freeOpenGLProgram(GLFWwindow* window) {
@@ -73,7 +68,6 @@ void freeOpenGLProgram(GLFWwindow* window) {
 	glDeleteTextures(1, &creeper.texture);
 	glDeleteTextures(1, &wallSegment.texture);
 }
-
 
 void move()
 {
@@ -153,15 +147,12 @@ void move()
 void drawScene(GLFWwindow* window) {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //Wyczyść bufor koloru i bufor głębokości
 
-
-	//M = glm::rotate(M, angle_y, glm::vec3(0.0f, 1.0f, 0.0f)); //Pomnóż macierz modelu razy macierz obrotu o kąt angle wokół osi Y
-	//M = glm::rotate(M, angle_x, glm::vec3(1.0f, 0.0f, 0.0f)); //Pomnóż macierz modelu razy macierz obrotu o kąt angle wokół osi X
-	glm::mat4 V = glm::lookAt(glm::vec3(0.0f, 15.0f, -5.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f)); //Wylicz macierz widoku
-	glm::mat4 P = glm::perspective(glm::radians(50.0f), 1.0f, 1.0f, 50.0f); //Wylicz macierz rzutowania
+	glm::mat4 V = glm::lookAt(glm::vec3(map_width/2, 10.0f, -map_height/2), glm::vec3(4.0f, 0.0f, 4.0f), glm::vec3(0.0f, 1.0f, 0.0f)); 
+	glm::mat4 P = glm::perspective(glm::radians(50.0f), window_width/window_height, 1.0f, 50.0f);
 
 
 	move();
-	
+	//creeper.move();
 
 	spLambertTextured->use();
 	glUniformMatrix4fv(spLambertTextured->u("P"), 1, false, glm::value_ptr(P));
@@ -175,24 +166,7 @@ void drawScene(GLFWwindow* window) {
 				glm::mat4(1.0f), glm::vec3(i, 0, j)), glm::vec3(0.5f, 0.5f, 0.5f)));
 		}
 	}
-	glUniformMatrix4fv(spLambertTextured->u("M"), 1, false, glm::value_ptr(creeper.position));
-
-	glEnableVertexAttribArray(spLambertTextured->a("vertex"));
-	glVertexAttribPointer(spLambertTextured->a("vertex"), 4, GL_FLOAT, false, 0, creeper.vertexes.data());
-
-	glEnableVertexAttribArray(spLambertTextured->a("normal"));
-	glVertexAttribPointer(spLambertTextured->a("normal"), 4, GL_FLOAT, false, 0, creeper.normals.data());
-
-	glEnableVertexAttribArray(spLambertTextured->a("texCoord"));
-	glVertexAttribPointer(spLambertTextured->a("texCoord"), 2, GL_FLOAT, false, 0, creeper.texCoords.data());
-
-	glActiveTexture(GL_TEXTURE0); glBindTexture(GL_TEXTURE_2D, creeper.texture); glUniform1i(spLambertTextured->u("tex"), 0);
-
-	glDrawElements(GL_TRIANGLES, creeper.indices.size(), GL_UNSIGNED_INT, creeper.indices.data());
-
-	glDisableVertexAttribArray(spLambertTextured->a("vertex"));
-	glDisableVertexAttribArray(spLambertTextured->a("normal"));
-	glDisableVertexAttribArray(spLambertTextured->a("texCoord"));
+	creeper.drawModel();
 
 	glfwSwapBuffers(window); //Skopiuj bufor tylny do bufora przedniego
 }
@@ -200,51 +174,45 @@ void drawScene(GLFWwindow* window) {
 
 int main(void)
 {
-	GLFWwindow* window;		// Wskaźnik na obiekt reprezentujący okno
-	wallSegment = WallSegment();		// Inicjalizacja obiektu WallSegment i kopia do zmiennej globalnej
+	GLFWwindow* window;	
+	wallSegment = WallSegment();
 	creeper = Creeper();
 
+	glfwSetErrorCallback(error_callback);
 
-	glfwSetErrorCallback(error_callback);//Zarejestruj procedurę obsługi błędów
-
-	if (!glfwInit()) { //Zainicjuj bibliotekę GLFW
+	if (!glfwInit()) { 
 		fprintf(stderr, "Nie można zainicjować GLFW.\n");
 		exit(EXIT_FAILURE);
 	}
 
-	window = glfwCreateWindow(1280, 720, "Pac-Man 3D", NULL, NULL);  //Utwórz okno 500x500 o tytule "OpenGL" i kontekst OpenGL.
+	window = glfwCreateWindow(window_width, window_height, "Pac-Man 3D", NULL, NULL); 
 
-	if (!window) //Jeżeli okna nie udało się utworzyć, to zamknij program
-	{
+	if (!window) {
 		fprintf(stderr, "Nie można utworzyć okna.\n");
 		glfwTerminate();
 		exit(EXIT_FAILURE);
 	}
 
-	glfwMakeContextCurrent(window); //Od tego momentu kontekst okna staje się aktywny i polecenia OpenGL będą dotyczyć właśnie jego.
-	glfwSwapInterval(1); //Czekaj na 1 powrót plamki przed pokazaniem ukrytego bufora
+	glfwMakeContextCurrent(window); 
+	glfwSwapInterval(1);
 
-	if (glewInit() != GLEW_OK) { //Zainicjuj bibliotekę GLEW
+	if (glewInit() != GLEW_OK) { 
 		fprintf(stderr, "Nie można zainicjować GLEW.\n");
 		exit(EXIT_FAILURE);
 	}
 
-	initOpenGLProgram(window); //Operacje inicjujące
+	initOpenGLProgram(window); 
 
 	//Główna pętla
-	float angle_x = 0; //zadeklaruj zmienną przechowującą aktualny kąt obrotu
-	float angle_y = 0; //zadeklaruj zmienną przechowującą aktualny kąt obrotu
-	glfwSetTime(0); //Wyzeruj licznik czasu
-	while (!glfwWindowShouldClose(window)) //Tak długo jak okno nie powinno zostać zamknięte
-	{
-		glfwSetTime(0); //Wyzeruj licznik czasu
-		drawScene(window); //Wykonaj procedurę rysującą
-		glfwPollEvents(); //Wykonaj procedury callback w zalezności od zdarzeń jakie zaszły.
+	while (!glfwWindowShouldClose(window)) {
+		glfwSetTime(0); 
+		drawScene(window); 
+		glfwPollEvents();
 	}
 
 	freeOpenGLProgram(window);
 
-	glfwDestroyWindow(window); //Usuń kontekst OpenGL i okno
-	glfwTerminate(); //Zwolnij zasoby zajęte przez GLFW
+	glfwDestroyWindow(window); 
+	glfwTerminate();
 	exit(EXIT_SUCCESS);
 }

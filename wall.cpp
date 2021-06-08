@@ -1,5 +1,6 @@
 #include "wall.h"
 
+// wektory modelu
 float wallSegmentVertices[] = {
 	//œciana 1
 	1.0f,-1.0f,-1.0f,1.0f,
@@ -55,7 +56,6 @@ float wallSegmentVertices[] = {
 	1.0f, 1.0f, 1.0f,1.0f,
 	1.0f, 1.0f,-1.0f,1.0f,
 };
-
 float wallSegmentNormals[] = {
 	//sciana 1
 	0.0f,0.0f,-1.0f,0.0f,
@@ -105,7 +105,6 @@ float wallSegmentNormals[] = {
 	1.0f,0.0f,0.0f,0.0f,
 	1.0f,0.0f,0.0f,0.0f,
 };
-
 float wallSegmentTexCoords[] = {
 	//sciana 1
 	1.0f, 0.0f,
@@ -155,6 +154,7 @@ float wallSegmentTexCoords[] = {
 	1.0f, 1.0f,
 	0.0f, 1.0f,
 };
+
 
 void WallSegment::readTexture(const char* filename) {
 	glActiveTexture(GL_TEXTURE0);

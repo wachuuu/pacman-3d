@@ -1,2 +1,9 @@
-﻿  main_file.cpp
+﻿  creeper.cpp
+C:\Users\gabwa\Desktop\Files\Studia\SEM4\GKiW\Projekt\new\pacman-3d\creeper.cpp(31,20): warning C4018: "<": niezgodność typu ze znakiem/bez znaku
+C:\Users\gabwa\Desktop\Files\Studia\SEM4\GKiW\Projekt\new\pacman-3d\creeper.cpp(43,20): warning C4018: "<": niezgodność typu ze znakiem/bez znaku
+C:\Users\gabwa\Desktop\Files\Studia\SEM4\GKiW\Projekt\new\pacman-3d\creeper.cpp(46,21): warning C4018: "<": niezgodność typu ze znakiem/bez znaku
+  main_file.cpp
+C:\Users\gabwa\Desktop\Files\Studia\SEM4\GKiW\Projekt\new\pacman-3d\main_file.cpp(188,42): warning C4244: "argument": konwersja z "float" do "int", możliwa utrata danych
+C:\Users\gabwa\Desktop\Files\Studia\SEM4\GKiW\Projekt\new\pacman-3d\main_file.cpp(188,28): warning C4244: "argument": konwersja z "float" do "int", możliwa utrata danych
+  Generowanie kodu...
   pl_szkielet_03_win.vcxproj -> C:\Users\gabwa\Desktop\Files\Studia\SEM4\GKiW\Projekt\new\pacman-3d\Debug\pl_szkielet_03_win.exe
