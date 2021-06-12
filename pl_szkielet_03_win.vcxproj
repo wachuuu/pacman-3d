@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="allmodels.h" />
+    <ClInclude Include="coin.h" />
     <ClInclude Include="constants.h" />
     <ClInclude Include="creeper.h" />
     <ClInclude Include="cube.h" />
@@ -35,6 +36,7 @@
     <ClInclude Include="wall.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="coin.cpp" />
     <ClCompile Include="creeper.cpp" />
     <ClCompile Include="cube.cpp" />
     <ClCompile Include="lodepng.cpp" />

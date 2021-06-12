@@ -17,6 +17,9 @@ public:
 
 	// rysowanie modelu
 	void drawSegment(glm::mat4 M);
+
+	// rysowanie ca³ej mapy
+	void drawMap(int map[11][11]);
 };
 
 #endif

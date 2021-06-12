@@ -192,3 +192,15 @@ void WallSegment::drawSegment(glm::mat4 M) {
 	glDisableVertexAttribArray(spLambertTextured->a("normal"));
 	glDisableVertexAttribArray(spLambertTextured->a("texCoord"));
 }
+
+void WallSegment::drawMap(int map[11][11]) {
+	for (int i = 0; i < 11; i++)
+	{
+		for (int j = 0; j < 11; j++)
+		{
+			if (map[i][j] == 1)
+				drawSegment(glm::scale(glm::translate(
+					glm::mat4(1.0f), glm::vec3(i, 0, j)), glm::vec3(0.5f, 0.5f, 0.5f)));
+		}
+	}
+}
