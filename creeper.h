@@ -5,7 +5,6 @@
 
 class Creeper {
 public:
-
 	// textura modelu
 	GLuint texture;	
 	// zmienne odpowiadajace za ruch modelu
@@ -14,11 +13,12 @@ public:
 	// wydarzenie zmieniajace kierunek
 	bool go_left, go_right, go_up, go_down;		
 
-
-	float position_x = 1;
-	float position_z = 1;
-	float movingSpeed = 1;
-
+	int movingSpeed = 20;
+	int arrayPositionX = 1;
+	int arrayPositionZ = 1;
+	int realPositionX = movingSpeed;
+	int realPositionZ = movingSpeed;
+	
 
 	// wektory modelu
 	std::vector<glm::vec4> vertexes;

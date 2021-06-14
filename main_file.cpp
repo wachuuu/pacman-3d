@@ -77,8 +77,12 @@ void move() {
 	creeper.position = glm::scale(creeper.position, glm::vec3(4.0f, 4.0f, 4.0f));
 	int licznik = 0;
 
-	std::cout << "x: " << creeper.position_x << " " << floorf(creeper.position_x+0.1) << ";  y:" << creeper.position_z << " " << floorf(creeper.position_z+0.1) << std::endl;
-	std::cout << creeper.direction << std::endl;
+	std::cout << "x: " << creeper.realPositionX << " z: " << creeper.realPositionZ << std::endl;
+	//std::cout << creeper.direction << std::endl;
+	if (creeper.realPositionX % creeper.movingSpeed == 0)
+		creeper.arrayPositionX = creeper.realPositionX / creeper.movingSpeed;
+	if (creeper.realPositionZ % creeper.movingSpeed == 0)
+		creeper.arrayPositionZ = creeper.realPositionZ / creeper.movingSpeed;
 
 
 	// rozwiazanie konfliktu klawiszy
@@ -94,68 +98,69 @@ void move() {
 
 	// ustalenie kierunku lub kolizji
 	if (licznik == 1) {
-		if (floorf(creeper.position_x) == creeper.position_x) //sprawdzenie czy float ma wartość całkowitą
+		if (creeper.realPositionX % creeper.movingSpeed == 0 && creeper.realPositionZ % creeper.movingSpeed == 0)
 		{
-			if (creeper.go_left && map[int(creeper.position_x) + 1][int(creeper.position_z)] != 1)
+			if (creeper.go_left && map[creeper.arrayPositionX + 1][creeper.arrayPositionZ] != 1)
 			{
 				creeper.direction = "left";
 			}
-			if (creeper.go_right && map[int(creeper.position_x) - 1][int(creeper.position_z )] != 1)
+			if (creeper.go_right && map[creeper.arrayPositionX - 1][creeper.arrayPositionZ] != 1)
 			{
 				creeper.direction = "right";
 			}
 		}
-		if (floorf(creeper.position_z) == creeper.position_z) //sprawdzenie czy float ma wartość całkowitą
+		if (creeper.realPositionX % creeper.movingSpeed == 0 && creeper.realPositionZ % creeper.movingSpeed == 0)
 		{
-			if (creeper.go_up && map[int(creeper.position_x)][int(creeper.position_z) + 1] != 1)
+			if (creeper.go_up && map[creeper.arrayPositionX][creeper.arrayPositionZ + 1] != 1)
 			{
 				creeper.direction = "up";
 			}
-			if (creeper.go_down && map[int(creeper.position_x)][int(creeper.position_z) - 1] != 1)
+			if (creeper.go_down && map[creeper.arrayPositionX][creeper.arrayPositionZ - 1] != 1)
 			{
 				creeper.direction = "down";
 			}
 		}
+		std::cout << "-------------------------------\n" + creeper.direction << std::endl;
 	}
 
 	// właściwy ruch modelu
 	if (creeper.direction == "up")
 	{
-		if (map[int(creeper.position_x)][int(creeper.position_z) + 1] != 1)
+		if (map[creeper.arrayPositionX][creeper.arrayPositionZ + 1] != 1)
 		{
-			creeper.position_z += creeper.movingSpeed;
-			creeper.position = glm::translate(creeper.position, glm::vec3(0, 0, creeper.movingSpeed));
+			creeper.realPositionZ += 1;
+			creeper.position = glm::translate(creeper.position, glm::vec3(0, 0, 1.0f / (float) creeper.movingSpeed));
 		}
 	}
 	if (creeper.direction == "down")
 	{
-		if (map[int(creeper.position_x)][int(creeper.position_z) - 1] != 1)
+		if (map[creeper.arrayPositionX][creeper.arrayPositionZ - 1] != 1)
 		{
-			creeper.position_z -= creeper.movingSpeed;
-			creeper.position = glm::translate(creeper.position, glm::vec3(0, 0, -creeper.movingSpeed));
+			creeper.realPositionZ -= 1;
+			creeper.position = glm::translate(creeper.position, glm::vec3(0, 0, -1.0f / (float) creeper.movingSpeed));
 		}
 	}
 	if (creeper.direction == "left")
 	{
-		if (map[int(creeper.position_x) + 1][int(creeper.position_z)] != 1)
+		if (map[creeper.arrayPositionX + 1][creeper.arrayPositionZ] != 1)
 		{
-			creeper.position_x += creeper.movingSpeed;
-			creeper.position = glm::translate(creeper.position, glm::vec3(creeper.movingSpeed, 0, 0));
+			creeper.realPositionX += 1;
+			creeper.position = glm::translate(creeper.position, glm::vec3(1.0f / (float) creeper.movingSpeed, 0, 0));
 		}
 	}
 	if (creeper.direction == "right")
 	{
-		if (map[int(creeper.position_x) - 1][int(creeper.position_z)] != 1)
+		if (map[creeper.arrayPositionX - 1][creeper.arrayPositionZ] != 1)
 		{
-			creeper.position_x -= creeper.movingSpeed;
-			creeper.position = glm::translate(creeper.position, glm::vec3(-creeper.movingSpeed, 0, 0));
+			creeper.realPositionX -= 1;
+			creeper.position = glm::translate(creeper.position, glm::vec3(-1.0f / (float) creeper.movingSpeed, 0, 0));
 		}
 	}
-
-	// zaznaczenie odwieczonego pola (zebranie monety)
-	// jezeli model jest na całkowitym polu
-	map[int(creeper.position_x+0.1)][int(creeper.position_z+0.1)] = 2; // ustaw pole jako odwiedzone
 	
+	// zaznaczenie odwiedzonego pola (zebranie monety)
+	// jezeli model jest na całkowitym polu
+	if(creeper.realPositionX % creeper.movingSpeed == 0 && creeper.realPositionZ % creeper.movingSpeed == 0)
+		map[creeper.realPositionX / creeper.movingSpeed][creeper.realPositionZ / creeper.movingSpeed] = 2; // ustaw pole jako odwiedzone
 
 	creeper.position = glm::scale(creeper.position, glm::vec3(0.25f, 0.25f, 0.25f));
 }
