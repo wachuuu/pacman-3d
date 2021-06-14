@@ -1,9 +1,4 @@
-﻿  creeper.cpp
-E:\grafika\projekt\pacman-3d\creeper.cpp(31,20): warning C4018: "<": niezgodność typu ze znakiem/bez znaku
-E:\grafika\projekt\pacman-3d\creeper.cpp(43,20): warning C4018: "<": niezgodność typu ze znakiem/bez znaku
-E:\grafika\projekt\pacman-3d\creeper.cpp(46,21): warning C4018: "<": niezgodność typu ze znakiem/bez znaku
-  main_file.cpp
-E:\grafika\projekt\pacman-3d\main_file.cpp(202,42): warning C4244: "argument": konwersja z "float" do "int", możliwa utrata danych
-E:\grafika\projekt\pacman-3d\main_file.cpp(202,28): warning C4244: "argument": konwersja z "float" do "int", możliwa utrata danych
-  Generowanie kodu...
-  pl_szkielet_03_win.vcxproj -> E:\grafika\projekt\pacman-3d\Debug\pl_szkielet_03_win.exe
+﻿  main_file.cpp
+C:\Users\gabwa\Desktop\Files\Studia\SEM4\GKiW\Projekt\new\pacman-3d\main_file.cpp(228,42): warning C4244: "argument": konwersja z "float" do "int", możliwa utrata danych
+C:\Users\gabwa\Desktop\Files\Studia\SEM4\GKiW\Projekt\new\pacman-3d\main_file.cpp(228,28): warning C4244: "argument": konwersja z "float" do "int", możliwa utrata danych
+  pl_szkielet_03_win.vcxproj -> C:\Users\gabwa\Desktop\Files\Studia\SEM4\GKiW\Projekt\new\pacman-3d\Debug\pl_szkielet_03_win.exe
