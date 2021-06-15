@@ -1,4 +1,4 @@
 ﻿  main_file.cpp
-C:\Users\gabwa\Desktop\Files\Studia\SEM4\GKiW\Projekt\new\pacman-3d\main_file.cpp(228,42): warning C4244: "argument": konwersja z "float" do "int", możliwa utrata danych
-C:\Users\gabwa\Desktop\Files\Studia\SEM4\GKiW\Projekt\new\pacman-3d\main_file.cpp(228,28): warning C4244: "argument": konwersja z "float" do "int", możliwa utrata danych
+C:\Users\gabwa\Desktop\Files\Studia\SEM4\GKiW\Projekt\new\pacman-3d\main_file.cpp(242,42): warning C4244: "argument": konwersja z "float" do "int", możliwa utrata danych
+C:\Users\gabwa\Desktop\Files\Studia\SEM4\GKiW\Projekt\new\pacman-3d\main_file.cpp(242,28): warning C4244: "argument": konwersja z "float" do "int", możliwa utrata danych
   pl_szkielet_03_win.vcxproj -> C:\Users\gabwa\Desktop\Files\Studia\SEM4\GKiW\Projekt\new\pacman-3d\Debug\pl_szkielet_03_win.exe

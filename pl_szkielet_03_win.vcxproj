@@ -24,6 +24,7 @@
     <ClInclude Include="constants.h" />
     <ClInclude Include="creeper.h" />
     <ClInclude Include="cube.h" />
+    <ClInclude Include="ghost.h" />
     <ClInclude Include="includes.h" />
     <ClInclude Include="lodepng.h" />
     <ClInclude Include="map.h" />
@@ -39,6 +40,7 @@
     <ClCompile Include="coin.cpp" />
     <ClCompile Include="creeper.cpp" />
     <ClCompile Include="cube.cpp" />
+    <ClCompile Include="ghost.cpp" />
     <ClCompile Include="lodepng.cpp" />
     <ClCompile Include="main_file.cpp" />
     <ClCompile Include="model.cpp" />

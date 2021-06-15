@@ -8,10 +8,10 @@ public:
 	// textura modelu
 	GLuint texture;	
 	// zmienne odpowiadajace za ruch modelu
-	std::string direction;
+	std::string direction = "left";
 	glm::mat4 position;
 	// wydarzenie zmieniajace kierunek
-	bool go_left, go_right, go_up, go_down;		
+	bool go_left, go_right, go_up, go_down, started;		
 
 	int movingSpeed = 20;
 	int arrayPositionX = 1;
@@ -34,6 +34,9 @@ public:
 
 	// rysowanie modelu
 	void drawModel();
+
+	// detekcja obrotu modelu
+	void checkDirectionChange(std::string nextDirection);
 };
 
 #endif

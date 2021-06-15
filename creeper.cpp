@@ -70,3 +70,41 @@ void Creeper::drawModel() {
 	glDisableVertexAttribArray(spLambertTextured->a("normal"));
 	glDisableVertexAttribArray(spLambertTextured->a("texCoord"));
 }
+
+void Creeper::checkDirectionChange(std::string nextDirection) {
+	if (nextDirection == "up") {
+		if (direction == "left")
+			position = glm::rotate(position, -PI / 2, glm::vec3(0.0f, 1.0f, 0.0f));
+		else if (direction == "right")
+			position = glm::rotate(position, PI / 2, glm::vec3(0.0f, 1.0f, 0.0f));
+		else if (direction == "down")
+			position = glm::rotate(position, PI , glm::vec3(0.0f, 1.0f, 0.0f));
+	}
+	else if(nextDirection == "down") {
+		if (direction == "left")
+			position = glm::rotate(position, PI / 2, glm::vec3(0.0f, 1.0f, 0.0f));
+		else if (direction == "right")
+			position = glm::rotate(position, -PI / 2, glm::vec3(0.0f, 1.0f, 0.0f));
+		else if (direction == "up")
+			position = glm::rotate(position, PI, glm::vec3(0.0f, 1.0f, 0.0f));
+	}
+	else if (nextDirection == "right") {
+		if (direction == "left")
+			position = glm::rotate(position, PI , glm::vec3(0.0f, 1.0f, 0.0f));
+		else if (direction == "up")
+			position = glm::rotate(position, -PI / 2, glm::vec3(0.0f, 1.0f, 0.0f));
+		else if (direction == "down")
+			position = glm::rotate(position, PI / 2, glm::vec3(0.0f, 1.0f, 0.0f));
+	}
+	else if (nextDirection == "left") {
+		if (direction == "right")
+			position = glm::rotate(position, PI, glm::vec3(0.0f, 1.0f, 0.0f));
+		else if (direction == "up")
+			position = glm::rotate(position, PI / 2, glm::vec3(0.0f, 1.0f, 0.0f));
+		else if (direction == "down")
+			position = glm::rotate(position, -PI / 2, glm::vec3(0.0f, 1.0f, 0.0f));
+	}
+
+	// aktualizacja kierunku poruszania
+	direction = nextDirection;
+}

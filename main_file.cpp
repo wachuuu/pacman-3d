@@ -5,6 +5,7 @@
 #include "creeper.h"
 #include "map.h"
 #include "coin.h"
+#include "ghost.h"
 
 extern float wallSegmentVertices[];
 extern float wallSegmentTexCoords[];
@@ -13,7 +14,7 @@ extern float wallSegmentNormals[];
 WallSegment wallSegment;	// Obiekt segmentu ściany
 Creeper creeper;			// Obiekt głównej postaci
 Coin coin;
-
+Ghost ghost;
 
 // współrzędne światła
 std::vector<glm::vec3> lightPos = {
@@ -32,14 +33,22 @@ void error_callback(int error, const char* description) {
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod ) {
 	if (action == GLFW_PRESS) {
-		if (key == GLFW_KEY_LEFT) 
+		if (key == GLFW_KEY_LEFT) {
+			creeper.started = true;
 			creeper.go_left = true;
-		if (key == GLFW_KEY_RIGHT) 
+		}
+		if (key == GLFW_KEY_RIGHT) {
+			creeper.started = true;
 			creeper.go_right = true;
-		if (key == GLFW_KEY_UP) 
+		}
+		if (key == GLFW_KEY_UP) {
+			creeper.started = true;
 			creeper.go_up = true;
-		if (key == GLFW_KEY_DOWN) 
+		}
+		if (key == GLFW_KEY_DOWN) {
+			creeper.started = true;
 			creeper.go_down = true;
+		}
 	}
 	if (action == GLFW_RELEASE) {
 		if (key == GLFW_KEY_LEFT)
@@ -63,13 +72,17 @@ void initOpenGLProgram(GLFWwindow* window) {
 	wallSegment.readTexture("./textures/bricks/bricks.png");
 	creeper.readTexture("./textures/creeper/AA1.png");
 	creeper.loadModel("./textures/creeper/Minecraft_Creeper.fbx");
+	ghost.loadModel("./textures/ghost/ghost.fbx");
+	ghost.readTexture("./textures/ghost/ghostTex.png");
 	coin.readTexture("./textures/coin/coinTex.png");
 	coin.loadModel("./textures/coin/Coin.fbx");
 	// skalowanie rozmiaru modelu
 	creeper.position = glm::translate(glm::mat4(1.0f), glm::vec3(1.0f, 0.0f, 1.0f));
 	creeper.position = glm::scale(creeper.position, glm::vec3(0.25f, 0.25f, 0.25f));
 
-
+	ghost.position = glm::translate(glm::mat4(1.0f), glm::vec3(9.0f, 0.6f, 9.0f));
+	ghost.position = glm::scale(ghost.position, glm::vec3(0.35f, 0.35f, 0.35f));
+	ghost.position = glm::rotate(ghost.position, -PI / 2, glm::vec3(1.0f, 0.0f, 0.0f));
 }
 
 void freeOpenGLProgram(GLFWwindow* window) {
@@ -78,6 +91,7 @@ void freeOpenGLProgram(GLFWwindow* window) {
 	// zwalnianie tekstur
 	glDeleteTextures(1, &creeper.texture);
 	glDeleteTextures(1, &coin.texture);
+	glDeleteTextures(1, &ghost.texture);
 	glDeleteTextures(1, &wallSegment.texture);
 }
 
@@ -93,8 +107,9 @@ bool winCheck() //sprawdza czy zebrano wszystkie monety
 void move() {
 	creeper.position = glm::scale(creeper.position, glm::vec3(4.0f, 4.0f, 4.0f));
 	int licznik = 0;
+	bool debug = false;
 
-	//std::cout << "x: " << creeper.realPositionX << " z: " << creeper.realPositionZ << std::endl;
+	if(debug) std::cout << "x: " << creeper.realPositionX << " z: " << creeper.realPositionZ << std::endl;
 	if (creeper.realPositionX % creeper.movingSpeed == 0)
 		creeper.arrayPositionX = creeper.realPositionX / creeper.movingSpeed;
 	if (creeper.realPositionZ % creeper.movingSpeed == 0)
@@ -114,62 +129,57 @@ void move() {
 
 	// ustalenie kierunku lub kolizji
 	if (licznik == 1) {
-		if (creeper.realPositionX % creeper.movingSpeed == 0 && creeper.realPositionZ % creeper.movingSpeed == 0)
-		{
-			if (creeper.go_left && map[creeper.arrayPositionX + 1][creeper.arrayPositionZ] != 1)
-			{
-				creeper.direction = "left";
+		if (creeper.realPositionX % creeper.movingSpeed == 0 && creeper.realPositionZ % creeper.movingSpeed == 0) {
+			if (creeper.go_left && map[creeper.arrayPositionX + 1][creeper.arrayPositionZ] != 1) {
+				creeper.checkDirectionChange("left");
 			}
-			if (creeper.go_right && map[creeper.arrayPositionX - 1][creeper.arrayPositionZ] != 1)
-			{
-				creeper.direction = "right";
+			if (creeper.go_right && map[creeper.arrayPositionX - 1][creeper.arrayPositionZ] != 1) {
+				creeper.checkDirectionChange("right");
 			}
 		}
-		if (creeper.realPositionX % creeper.movingSpeed == 0 && creeper.realPositionZ % creeper.movingSpeed == 0)
-		{
-			if (creeper.go_up && map[creeper.arrayPositionX][creeper.arrayPositionZ + 1] != 1)
-			{
-				creeper.direction = "up";
+		if (creeper.realPositionX % creeper.movingSpeed == 0 && creeper.realPositionZ % creeper.movingSpeed == 0) {
+			if (creeper.go_up && map[creeper.arrayPositionX][creeper.arrayPositionZ + 1] != 1) {
+				creeper.checkDirectionChange("up");
 			}
-			if (creeper.go_down && map[creeper.arrayPositionX][creeper.arrayPositionZ - 1] != 1)
-			{
-				creeper.direction = "down";
+			if (creeper.go_down && map[creeper.arrayPositionX][creeper.arrayPositionZ - 1] != 1) {
+				creeper.checkDirectionChange("down");
 			}
 		}
-		//std::cout << "-------------------------------\n" + creeper.direction << std::endl;
+		if(debug) std::cout << "-------------------------------\n" + creeper.direction << std::endl;
 	}
 
 	// właściwy ruch modelu
-	if (creeper.direction == "up")
+	if (creeper.direction == "up" && creeper.started)
 	{
+
 		if (map[creeper.arrayPositionX][creeper.arrayPositionZ + 1] != 1)
 		{
 			creeper.realPositionZ += 1;
-			creeper.position = glm::translate(creeper.position, glm::vec3(0, 0, 1.0f / (float) creeper.movingSpeed));
+			creeper.position = glm::translate(creeper.position, glm::vec3(1.0f / (float) creeper.movingSpeed, 0.0f, 0.0f));
 		}
 	}
-	if (creeper.direction == "down")
+	if (creeper.direction == "down" && creeper.started)
 	{
 		if (map[creeper.arrayPositionX][creeper.arrayPositionZ - 1] != 1)
 		{
 			creeper.realPositionZ -= 1;
-			creeper.position = glm::translate(creeper.position, glm::vec3(0, 0, -1.0f / (float) creeper.movingSpeed));
+			creeper.position = glm::translate(creeper.position, glm::vec3(1.0f / (float) creeper.movingSpeed, 0.0f, 0.0f));
 		}
 	}
-	if (creeper.direction == "left")
+	if (creeper.direction == "left" && creeper.started)
 	{
 		if (map[creeper.arrayPositionX + 1][creeper.arrayPositionZ] != 1)
 		{
 			creeper.realPositionX += 1;
-			creeper.position = glm::translate(creeper.position, glm::vec3(1.0f / (float) creeper.movingSpeed, 0, 0));
+			creeper.position = glm::translate(creeper.position, glm::vec3(1.0f / (float) creeper.movingSpeed, 0.0f, 0.0f));
 		}
 	}
-	if (creeper.direction == "right")
+	if (creeper.direction == "right" && creeper.started)
 	{
 		if (map[creeper.arrayPositionX - 1][creeper.arrayPositionZ] != 1)
 		{
 			creeper.realPositionX -= 1;
-			creeper.position = glm::translate(creeper.position, glm::vec3(-1.0f / (float) creeper.movingSpeed, 0, 0));
+			creeper.position = glm::translate(creeper.position, glm::vec3(1.0f / (float)creeper.movingSpeed, 0.0f, 0.0f));
 		}
 	}
 	
@@ -182,6 +192,7 @@ void move() {
 }
 
 void drawScene(GLFWwindow* window) {
+
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glm::vec4 lightPosition1 = glm::vec4(lightPos[0], 1.f);
@@ -205,6 +216,7 @@ void drawScene(GLFWwindow* window) {
 
 	wallSegment.drawMap(map);
 	creeper.drawModel();
+	ghost.drawModel();
 	coin.placeCoins(map);
 
 	glfwSwapBuffers(window);
@@ -216,6 +228,8 @@ int main(void)
 	wallSegment = WallSegment();
 	creeper = Creeper();
 	coin = Coin();
+	ghost = Ghost();
+
 	coin.loadMap(map);
 
 	glfwSetErrorCallback(error_callback);
