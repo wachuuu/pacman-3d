@@ -101,6 +101,7 @@ bool winCheck() //sprawdza czy zebrano wszystkie monety
 		for (int j = 0; j < map_width; j++)
 			if (map[i][j] == 0)
 				return false;
+	PlaySound(TEXT("./sounds/coin_sound_fast.wav"), NULL, SND_SYNC);
 	return true;
 }
 
@@ -184,10 +185,12 @@ void move() {
 	}
 	
 	// zaznaczenie odwiedzonego pola (zebranie monety)
-	// jezeli model jest na całkowitym polu
-	if(creeper.realPositionX % creeper.movingSpeed == 0 && creeper.realPositionZ % creeper.movingSpeed == 0)
-		map[creeper.realPositionX / creeper.movingSpeed][creeper.realPositionZ / creeper.movingSpeed] = 2; // ustaw pole jako odwiedzone
-
+	if (creeper.realPositionX % creeper.movingSpeed == 0 && creeper.realPositionZ % creeper.movingSpeed == 0) {
+		if (map[creeper.realPositionX / creeper.movingSpeed][creeper.realPositionZ / creeper.movingSpeed] == 0) {
+			map[creeper.realPositionX / creeper.movingSpeed][creeper.realPositionZ / creeper.movingSpeed] = 2; // zdobycie monety
+			//PlaySound(TEXT("./sounds/coin_sound-_1_.wav"), NULL, SND_SYNC);
+		}
+	}
 	creeper.position = glm::scale(creeper.position, glm::vec3(0.25f, 0.25f, 0.25f));
 }
 

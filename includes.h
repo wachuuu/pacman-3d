@@ -9,6 +9,7 @@
 #include <iostream>
 #include <stdlib.h>
 #include <stdio.h>
+#include <Windows.h>
 #include "constants.h"
 #include "allmodels.h"
 #include "lodepng.h"
