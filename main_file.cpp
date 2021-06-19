@@ -23,7 +23,6 @@ std::vector<glm::vec3> lightPos = {
 	glm::vec3(-15.0f, 20.0f, 13.0f),
 	glm::vec3(5.0f, 20.0f, 35.0f)
 };
-
 float window_width = 1280;
 float window_height = 720;
 
@@ -101,7 +100,7 @@ bool winCheck() //sprawdza czy zebrano wszystkie monety
 		for (int j = 0; j < map_width; j++)
 			if (map[i][j] == 0)
 				return false;
-	PlaySound(TEXT("./sounds/coin_sound_fast.wav"), NULL, SND_SYNC);
+	PlaySound(TEXT("./sounds/win_1up.wav"), NULL, SND_SYNC);
 	return true;
 }
 
@@ -188,7 +187,7 @@ void move() {
 	if (creeper.realPositionX % creeper.movingSpeed == 0 && creeper.realPositionZ % creeper.movingSpeed == 0) {
 		if (map[creeper.realPositionX / creeper.movingSpeed][creeper.realPositionZ / creeper.movingSpeed] == 0) {
 			map[creeper.realPositionX / creeper.movingSpeed][creeper.realPositionZ / creeper.movingSpeed] = 2; // zdobycie monety
-			//PlaySound(TEXT("./sounds/coin_sound-_1_.wav"), NULL, SND_SYNC);
+			PlaySound(TEXT("./sounds/coin_sound_faster.wav"), NULL, SND_ASYNC);
 		}
 	}
 	creeper.position = glm::scale(creeper.position, glm::vec3(0.25f, 0.25f, 0.25f));

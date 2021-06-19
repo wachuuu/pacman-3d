@@ -70,3 +70,92 @@ void Ghost::drawModel() {
 	glDisableVertexAttribArray(spLambertTextured->a("normal"));
 	glDisableVertexAttribArray(spLambertTextured->a("texCoord"));
 }
+
+void Ghost::move() {
+	//position = glm::scale(position, glm::vec3(4.0f, 4.0f, 4.0f));
+	int licznik = 0;
+	bool debug = false;
+
+	if (debug) std::cout << "x: " << realPositionX << " z: " << realPositionZ << std::endl;
+	if (realPositionX % movingSpeed == 0)
+		arrayPositionX = realPositionX / movingSpeed;
+	if (realPositionZ % movingSpeed == 0)
+		arrayPositionZ = realPositionZ / movingSpeed;
+
+
+	// rozwiazanie konfliktu klawiszy
+	// model porusza sie tylko w jednym kierunku jednoczesnie
+	if (go_right)
+		licznik++;
+	if (go_left)
+		licznik++;
+	if (go_up)
+		licznik++;
+	if (go_down)
+		licznik++;
+
+	// ustalenie kierunku lub kolizji
+	if (licznik == 1) {
+		if (realPositionX % movingSpeed == 0 && realPositionZ % movingSpeed == 0) {
+			if (go_left && map[arrayPositionX + 1][arrayPositionZ] != 1) {
+				direction = "up";
+			}
+			if (go_right && map[arrayPositionX - 1][arrayPositionZ] != 1) {
+				direction = "right";
+			}
+		}
+		if (realPositionX % movingSpeed == 0 && realPositionZ % movingSpeed == 0) {
+			if (go_up && map[arrayPositionX][arrayPositionZ + 1] != 1) {
+				direction = "up";
+			}
+			if (go_down && map[arrayPositionX][arrayPositionZ - 1] != 1) {
+				direction = "down";
+			}
+		}
+		if (debug) std::cout << "-------------------------------\n" + direction << std::endl;
+	}
+
+	// w³aœciwy ruch modelu
+	if (direction == "up")
+	{
+
+		if (map[arrayPositionX][arrayPositionZ + 1] != 1)
+		{
+			realPositionZ += 1;
+			position = glm::translate(position, glm::vec3(1.0f / (float)movingSpeed, 0.0f, 0.0f));
+		}
+	}
+	if (direction == "down")
+	{
+		if (map[arrayPositionX][arrayPositionZ - 1] != 1)
+		{
+			realPositionZ -= 1;
+			position = glm::translate(position, glm::vec3(1.0f / (float)movingSpeed, 0.0f, 0.0f));
+		}
+	}
+	if (direction == "left")
+	{
+		if (map[arrayPositionX + 1][arrayPositionZ] != 1)
+		{
+			realPositionX += 1;
+			position = glm::translate(position, glm::vec3(1.0f / (float)movingSpeed, 0.0f, 0.0f));
+		}
+	}
+	if (direction == "right")
+	{
+		if (map[arrayPositionX - 1][arrayPositionZ] != 1)
+		{
+			realPositionX -= 1;
+			position = glm::translate(position, glm::vec3(1.0f / (float)movingSpeed, 0.0f, 0.0f));
+		}
+	}
+
+	// zaznaczenie odwiedzonego pola (zebranie monety)
+	if (realPositionX % movingSpeed == 0 && realPositionZ % movingSpeed == 0) {
+		if (map[realPositionX / movingSpeed][realPositionZ / movingSpeed] == 0) {
+			map[realPositionX / movingSpeed][realPositionZ / movingSpeed] = 2; // zdobycie monety
+			//PlaySound(TEXT("./sounds/coin_sound-_1_.wav"), NULL, SND_SYNC);
+		}
+	}
+	//position = glm::scale(position, glm::vec3(0.25f, 0.25f, 0.25f));
+}

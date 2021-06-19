@@ -5,10 +5,25 @@
 
 class Ghost {
 public:
+	int map[11][11] = {
+	{1,1,1,1,1,1,1,1,1,1,1},
+	{1,0,0,0,0,0,0,0,0,0,1},
+	{1,0,1,1,1,0,1,1,1,0,1},
+	{1,0,1,0,0,0,0,0,1,0,1},
+	{1,0,0,0,1,0,1,0,0,0,1},
+	{1,1,1,0,1,0,1,0,1,1,1},
+	{1,0,0,0,1,0,1,0,0,0,1},
+	{1,0,1,0,0,0,0,0,1,0,1},
+	{1,0,1,1,1,0,1,1,1,0,1},
+	{1,0,0,0,0,0,0,0,0,2,1},
+	{1,1,1,1,1,1,1,1,1,1,1} };
+
 	// textura modelu
 	GLuint texture;
 	// zmienne odpowiadajace za ruch modelu
 	glm::mat4 position;
+	bool go_left, go_right, go_up, go_down;
+	std::string direction ;
 	// wydarzenie zmieniajace kierunek
 
 	int movingSpeed = 20;
@@ -32,6 +47,9 @@ public:
 
 	// rysowanie modelu
 	void drawModel();
+
+	// poruszanie siê
+	void move();
 };
 
 #endif

@@ -1,6 +1,6 @@
 ﻿  main_file.cpp
 C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\shared\minwindef.h(130,1): warning C4005: "APIENTRY": ponowna definicja makra
 C:\Users\gabwa\Desktop\Files\Studia\SEM4\GKiW\Projekt\new\pacman-3d\glfw\include\GLFW\glfw3.h(123): message : zobacz poprzednią definicję „APIENTRY”
-C:\Users\gabwa\Desktop\Files\Studia\SEM4\GKiW\Projekt\new\pacman-3d\main_file.cpp(245,42): warning C4244: "argument": konwersja z "float" do "int", możliwa utrata danych
-C:\Users\gabwa\Desktop\Files\Studia\SEM4\GKiW\Projekt\new\pacman-3d\main_file.cpp(245,28): warning C4244: "argument": konwersja z "float" do "int", możliwa utrata danych
+C:\Users\gabwa\Desktop\Files\Studia\SEM4\GKiW\Projekt\new\pacman-3d\main_file.cpp(244,42): warning C4244: "argument": konwersja z "float" do "int", możliwa utrata danych
+C:\Users\gabwa\Desktop\Files\Studia\SEM4\GKiW\Projekt\new\pacman-3d\main_file.cpp(244,28): warning C4244: "argument": konwersja z "float" do "int", możliwa utrata danych
   pl_szkielet_03_win.vcxproj -> C:\Users\gabwa\Desktop\Files\Studia\SEM4\GKiW\Projekt\new\pacman-3d\Debug\pl_szkielet_03_win.exe
