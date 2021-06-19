@@ -72,9 +72,9 @@ void Ghost::drawModel() {
 }
 
 void Ghost::move() {
-	//position = glm::scale(position, glm::vec3(4.0f, 4.0f, 4.0f));
-	int licznik = 0;
-	bool debug = false;
+	position = glm::rotate(position, PI / 2, glm::vec3(1.0f, 0.0f, 0.0f));
+	position = glm::scale(position, glm::vec3(4.0f, 4.0f, 4.0f));
+	bool debug = true;
 
 	if (debug) std::cout << "x: " << realPositionX << " z: " << realPositionZ << std::endl;
 	if (realPositionX % movingSpeed == 0)
@@ -82,38 +82,22 @@ void Ghost::move() {
 	if (realPositionZ % movingSpeed == 0)
 		arrayPositionZ = realPositionZ / movingSpeed;
 
-
-	// rozwiazanie konfliktu klawiszy
-	// model porusza sie tylko w jednym kierunku jednoczesnie
-	if (go_right)
-		licznik++;
-	if (go_left)
-		licznik++;
-	if (go_up)
-		licznik++;
-	if (go_down)
-		licznik++;
-
-	// ustalenie kierunku lub kolizji
-	if (licznik == 1) {
 		if (realPositionX % movingSpeed == 0 && realPositionZ % movingSpeed == 0) {
-			if (go_left && map[arrayPositionX + 1][arrayPositionZ] != 1) {
-				direction = "up";
+			int los = (rand() % 4) + 1;
+			if (los == 1 && map[arrayPositionX + 1][arrayPositionZ] != 1) {
+				direction = "left";
 			}
-			if (go_right && map[arrayPositionX - 1][arrayPositionZ] != 1) {
+			if (los == 2 && map[arrayPositionX - 1][arrayPositionZ] != 1) {
 				direction = "right";
 			}
-		}
-		if (realPositionX % movingSpeed == 0 && realPositionZ % movingSpeed == 0) {
-			if (go_up && map[arrayPositionX][arrayPositionZ + 1] != 1) {
+			if (los == 3 && map[arrayPositionX][arrayPositionZ + 1] != 1) {
 				direction = "up";
 			}
-			if (go_down && map[arrayPositionX][arrayPositionZ - 1] != 1) {
+			if (los == 4 && map[arrayPositionX][arrayPositionZ - 1] != 1) {
 				direction = "down";
 			}
 		}
-		if (debug) std::cout << "-------------------------------\n" + direction << std::endl;
-	}
+		if (debug ) std::cout << "-------------------------------\n" + direction << std::endl;
 
 	// w³aœciwy ruch modelu
 	if (direction == "up")
@@ -122,7 +106,7 @@ void Ghost::move() {
 		if (map[arrayPositionX][arrayPositionZ + 1] != 1)
 		{
 			realPositionZ += 1;
-			position = glm::translate(position, glm::vec3(1.0f / (float)movingSpeed, 0.0f, 0.0f));
+			position = glm::translate(position, glm::vec3(0.0f, 0.0f, 1.0f / (float)movingSpeed));
 		}
 	}
 	if (direction == "down")
@@ -130,7 +114,7 @@ void Ghost::move() {
 		if (map[arrayPositionX][arrayPositionZ - 1] != 1)
 		{
 			realPositionZ -= 1;
-			position = glm::translate(position, glm::vec3(1.0f / (float)movingSpeed, 0.0f, 0.0f));
+			position = glm::translate(position, glm::vec3(0.0f, 0.0f, -1.0f / (float)movingSpeed));
 		}
 	}
 	if (direction == "left")
@@ -146,16 +130,17 @@ void Ghost::move() {
 		if (map[arrayPositionX - 1][arrayPositionZ] != 1)
 		{
 			realPositionX -= 1;
-			position = glm::translate(position, glm::vec3(1.0f / (float)movingSpeed, 0.0f, 0.0f));
+			position = glm::translate(position, glm::vec3(-1.0f / (float)movingSpeed, 0.0f, 0.0f));
 		}
 	}
 
 	// zaznaczenie odwiedzonego pola (zebranie monety)
-	if (realPositionX % movingSpeed == 0 && realPositionZ % movingSpeed == 0) {
+	/*if (realPositionX % movingSpeed == 0 && realPositionZ % movingSpeed == 0) {
 		if (map[realPositionX / movingSpeed][realPositionZ / movingSpeed] == 0) {
 			map[realPositionX / movingSpeed][realPositionZ / movingSpeed] = 2; // zdobycie monety
 			//PlaySound(TEXT("./sounds/coin_sound-_1_.wav"), NULL, SND_SYNC);
 		}
-	}
-	//position = glm::scale(position, glm::vec3(0.25f, 0.25f, 0.25f));
+	}*/
+	position = glm::scale(position, glm::vec3(0.25f, 0.25f, 0.25f));
+	position = glm::rotate(position, -PI / 2, glm::vec3(1.0f, 0.0f, 0.0f));
 }

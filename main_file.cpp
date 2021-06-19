@@ -80,8 +80,10 @@ void initOpenGLProgram(GLFWwindow* window) {
 	creeper.position = glm::scale(creeper.position, glm::vec3(0.25f, 0.25f, 0.25f));
 
 	ghost.position = glm::translate(glm::mat4(1.0f), glm::vec3(9.0f, 0.6f, 9.0f));
-	ghost.position = glm::scale(ghost.position, glm::vec3(0.35f, 0.35f, 0.35f));
-	ghost.position = glm::rotate(ghost.position, -PI / 2, glm::vec3(1.0f, 0.0f, 0.0f));
+	ghost.position = glm::scale(ghost.position, glm::vec3(0.25f, 0.25f, 0.25f));
+	ghost.position = glm::rotate(ghost.position, -PI/2 , glm::vec3(1.0f, 0.0f, 0.0f));
+
+	srand(time(NULL));
 }
 
 void freeOpenGLProgram(GLFWwindow* window) {
@@ -102,6 +104,15 @@ bool winCheck() //sprawdza czy zebrano wszystkie monety
 				return false;
 	PlaySound(TEXT("./sounds/win_1up.wav"), NULL, SND_SYNC);
 	return true;
+}
+bool endCheck()
+{
+	if (creeper.arrayPositionX == ghost.arrayPositionX && creeper.arrayPositionZ == ghost.arrayPositionZ)
+	{
+		PlaySound(TEXT("./sounds/death.wav"), NULL, SND_SYNC);
+		return true;
+	}
+	return false;
 }
 
 void move() {
@@ -206,6 +217,7 @@ void drawScene(GLFWwindow* window) {
 	glm::mat4 P = glm::perspective(glm::radians(50.0f), window_width / window_height, 1.0f, 50.0f);
 
 	move();
+	ghost.move();
 
 	spLambertTextured->use();
 	glUniformMatrix4fv(spLambertTextured->u("P"), 1, false, glm::value_ptr(P));
@@ -266,6 +278,11 @@ int main(void)
 		if (winCheck())
 		{
 			std::cout << "Wygrales! \n \"Lata rozpadaja sie na miesiace, miesiace na dni, dni na godziny, minuty na sekundy, a sekundy przeciekaja. \n Czy jestem? Jestem pewna iloscia sekund- ktore przeciekly.\n Rezultat: nic. Nic. \"" << std::endl;
+			break;
+		}
+		if (endCheck())
+		{
+			std::cout << "Przegrales! \n \"Lata rozpadaja sie na miesiace, miesiace na dni, dni na godziny, minuty na sekundy, a sekundy przeciekaja. \n Czy jestem? Jestem pewna iloscia sekund- ktore przeciekly.\n Rezultat: nic. Nic. \"" << std::endl;
 			break;
 		}
 	}

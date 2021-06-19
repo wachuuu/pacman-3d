@@ -23,14 +23,14 @@ public:
 	// zmienne odpowiadajace za ruch modelu
 	glm::mat4 position;
 	bool go_left, go_right, go_up, go_down;
-	std::string direction ;
+	std::string direction;
 	// wydarzenie zmieniajace kierunek
 
 	int movingSpeed = 20;
-	int arrayPositionX = 1;
-	int arrayPositionZ = 1;
-	int realPositionX = movingSpeed;
-	int realPositionZ = movingSpeed;
+	int arrayPositionX = 9;
+	int arrayPositionZ = 9;
+	int realPositionX = arrayPositionX * movingSpeed;
+	int realPositionZ = arrayPositionZ * movingSpeed;
 
 
 	// wektory modelu
