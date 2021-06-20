@@ -74,7 +74,7 @@ void Ghost::drawModel() {
 void Ghost::move() {
 	position = glm::rotate(position, PI / 2, glm::vec3(1.0f, 0.0f, 0.0f));
 	position = glm::scale(position, glm::vec3(4.0f, 4.0f, 4.0f));
-	bool debug = true;
+	bool debug = false;
 
 	if (debug) std::cout << "x: " << realPositionX << " z: " << realPositionZ << std::endl;
 	if (realPositionX % movingSpeed == 0)

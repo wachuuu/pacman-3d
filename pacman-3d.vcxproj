@@ -19,35 +19,23 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="allmodels.h" />
     <ClInclude Include="coin.h" />
     <ClInclude Include="constants.h" />
     <ClInclude Include="creeper.h" />
-    <ClInclude Include="cube.h" />
     <ClInclude Include="ghost.h" />
     <ClInclude Include="includes.h" />
     <ClInclude Include="lodepng.h" />
     <ClInclude Include="map.h" />
-    <ClInclude Include="model.h" />
-    <ClInclude Include="myCube.h" />
     <ClInclude Include="shaderprogram.h" />
-    <ClInclude Include="sphere.h" />
-    <ClInclude Include="teapot.h" />
-    <ClInclude Include="torus.h" />
     <ClInclude Include="wall.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="coin.cpp" />
     <ClCompile Include="creeper.cpp" />
-    <ClCompile Include="cube.cpp" />
     <ClCompile Include="ghost.cpp" />
     <ClCompile Include="lodepng.cpp" />
     <ClCompile Include="main_file.cpp" />
-    <ClCompile Include="model.cpp" />
     <ClCompile Include="shaderprogram.cpp" />
-    <ClCompile Include="sphere.cpp" />
-    <ClCompile Include="teapot.cpp" />
-    <ClCompile Include="torus.cpp" />
     <ClCompile Include="wall.cpp" />
   </ItemGroup>
   <ItemGroup>
