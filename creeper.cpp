@@ -51,24 +51,24 @@ void Creeper::loadModel(std::string plik) {
 
 void Creeper::drawModel() {
 
-	glUniformMatrix4fv(spLambertTextured->u("M"), 1, false, glm::value_ptr(position));
+	glUniformMatrix4fv(myShader->u("M"), 1, false, glm::value_ptr(position));
 
-	glEnableVertexAttribArray(spLambertTextured->a("vertex"));
-	glVertexAttribPointer(spLambertTextured->a("vertex"), 4, GL_FLOAT, false, 0, vertexes.data());
+	glEnableVertexAttribArray(myShader->a("vertex"));
+	glVertexAttribPointer(myShader->a("vertex"), 4, GL_FLOAT, false, 0, vertexes.data());
 
-	glEnableVertexAttribArray(spLambertTextured->a("normal"));
-	glVertexAttribPointer(spLambertTextured->a("normal"), 4, GL_FLOAT, false, 0, normals.data());
+	glEnableVertexAttribArray(myShader->a("normal"));
+	glVertexAttribPointer(myShader->a("normal"), 4, GL_FLOAT, false, 0, normals.data());
 
-	glEnableVertexAttribArray(spLambertTextured->a("texCoord"));
-	glVertexAttribPointer(spLambertTextured->a("texCoord"), 2, GL_FLOAT, false, 0, texCoords.data());
+	glEnableVertexAttribArray(myShader->a("texCoord"));
+	glVertexAttribPointer(myShader->a("texCoord"), 2, GL_FLOAT, false, 0, texCoords.data());
 
-	glActiveTexture(GL_TEXTURE0); glBindTexture(GL_TEXTURE_2D, texture); glUniform1i(spLambertTextured->u("tex"), 0);
+	glActiveTexture(GL_TEXTURE0); glBindTexture(GL_TEXTURE_2D, texture); glUniform1i(myShader->u("tex"), 0);
 
 	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, indices.data());
 
-	glDisableVertexAttribArray(spLambertTextured->a("vertex"));
-	glDisableVertexAttribArray(spLambertTextured->a("normal"));
-	glDisableVertexAttribArray(spLambertTextured->a("texCoord"));
+	glDisableVertexAttribArray(myShader->a("vertex"));
+	glDisableVertexAttribArray(myShader->a("normal"));
+	glDisableVertexAttribArray(myShader->a("texCoord"));
 }
 
 void Creeper::checkDirectionChange(std::string nextDirection) {

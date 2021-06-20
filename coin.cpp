@@ -50,25 +50,25 @@ void Coin::loadModel(std::string plik) {
 }
 
 void Coin::drawModel(float xCoords, float yCoords) {
-	glUniformMatrix4fv(spLambertTextured->u("M"), 1, false, glm::value_ptr(position[xCoords][yCoords]));
+	glUniformMatrix4fv(myShader->u("M"), 1, false, glm::value_ptr(position[xCoords][yCoords]));
 	//position[xCoords][yCoords] = glm::rotate(glm::translate(position[xCoords][yCoords], glm::vec3(-0.65f, 0.0f, 0.2f)), PI / 30, glm::vec3(0.0f, 1.0f, 0.0f));
 	position[xCoords][yCoords] = glm::rotate(glm::translate(position[xCoords][yCoords], glm::vec3(-0.4f, 0.0f, 0.1f)), PI / 50, glm::vec3(0.0f, 1.0f, 0.0f));
-	glEnableVertexAttribArray(spLambertTextured->a("vertex"));
-	glVertexAttribPointer(spLambertTextured->a("vertex"), 4, GL_FLOAT, false, 0, vertexes.data());
+	glEnableVertexAttribArray(myShader->a("vertex"));
+	glVertexAttribPointer(myShader->a("vertex"), 4, GL_FLOAT, false, 0, vertexes.data());
 
-	glEnableVertexAttribArray(spLambertTextured->a("normal"));
-	glVertexAttribPointer(spLambertTextured->a("normal"), 4, GL_FLOAT, false, 0, normals.data());
+	glEnableVertexAttribArray(myShader->a("normal"));
+	glVertexAttribPointer(myShader->a("normal"), 4, GL_FLOAT, false, 0, normals.data());
 
-	glEnableVertexAttribArray(spLambertTextured->a("texCoord"));
-	glVertexAttribPointer(spLambertTextured->a("texCoord"), 2, GL_FLOAT, false, 0, texCoords.data());
+	glEnableVertexAttribArray(myShader->a("texCoord"));
+	glVertexAttribPointer(myShader->a("texCoord"), 2, GL_FLOAT, false, 0, texCoords.data());
 
-	glActiveTexture(GL_TEXTURE0); glBindTexture(GL_TEXTURE_2D, texture); glUniform1i(spLambertTextured->u("tex"), 0);
+	glActiveTexture(GL_TEXTURE0); glBindTexture(GL_TEXTURE_2D, texture); glUniform1i(myShader->u("tex"), 0);
 
 	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, indices.data());
 
-	glDisableVertexAttribArray(spLambertTextured->a("vertex"));
-	glDisableVertexAttribArray(spLambertTextured->a("normal"));
-	glDisableVertexAttribArray(spLambertTextured->a("texCoord"));
+	glDisableVertexAttribArray(myShader->a("vertex"));
+	glDisableVertexAttribArray(myShader->a("normal"));
+	glDisableVertexAttribArray(myShader->a("texCoord"));
 }
 
 void Coin::placeCoins(int map[11][11]) {

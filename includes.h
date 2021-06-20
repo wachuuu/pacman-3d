@@ -11,7 +11,6 @@
 #include <stdio.h>
 #include <Windows.h>
 #include "constants.h"
-#include "allmodels.h"
 #include "lodepng.h"
 #include "shaderprogram.h"
 #include <time.h>

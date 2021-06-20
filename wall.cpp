@@ -177,20 +177,20 @@ void WallSegment::readTexture(const char* filename) {
 }
 
 void WallSegment::drawSegment(glm::mat4 M) {
-	glUniformMatrix4fv(spLambertTextured->u("M"), 1, false, glm::value_ptr(M));
-	glEnableVertexAttribArray(spLambertTextured->a("vertex"));
-	glVertexAttribPointer(spLambertTextured->a("vertex"), 4, GL_FLOAT, false, 0, wallSegmentVertices);
-	glEnableVertexAttribArray(spLambertTextured->a("normal"));
-	glVertexAttribPointer(spLambertTextured->a("normal"), 4, GL_FLOAT, false, 0, wallSegmentNormals);
-	glEnableVertexAttribArray(spLambertTextured->a("texCoord"));
-	glVertexAttribPointer(spLambertTextured->a("texCoord"), 2, GL_FLOAT, false, 0, wallSegmentTexCoords);
+	glUniformMatrix4fv(myShader->u("M"), 1, false, glm::value_ptr(M));
+	glEnableVertexAttribArray(myShader->a("vertex"));
+	glVertexAttribPointer(myShader->a("vertex"), 4, GL_FLOAT, false, 0, wallSegmentVertices);
+	glEnableVertexAttribArray(myShader->a("normal"));
+	glVertexAttribPointer(myShader->a("normal"), 4, GL_FLOAT, false, 0, wallSegmentNormals);
+	glEnableVertexAttribArray(myShader->a("texCoord"));
+	glVertexAttribPointer(myShader->a("texCoord"), 2, GL_FLOAT, false, 0, wallSegmentTexCoords);
 
-	glActiveTexture(GL_TEXTURE0); glBindTexture(GL_TEXTURE_2D, texture); glUniform1i(spLambertTextured->u("tex"), 0);
+	glActiveTexture(GL_TEXTURE0); glBindTexture(GL_TEXTURE_2D, texture); glUniform1i(myShader->u("tex"), 0);
 	glDrawArrays(GL_TRIANGLES, 0, wallSegmentCount);
 
-	glDisableVertexAttribArray(spLambertTextured->a("vertex"));
-	glDisableVertexAttribArray(spLambertTextured->a("normal"));
-	glDisableVertexAttribArray(spLambertTextured->a("texCoord"));
+	glDisableVertexAttribArray(myShader->a("vertex"));
+	glDisableVertexAttribArray(myShader->a("normal"));
+	glDisableVertexAttribArray(myShader->a("texCoord"));
 }
 
 void WallSegment::drawMap(int map[11][11]) {

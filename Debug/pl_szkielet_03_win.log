@@ -1,7 +1,45 @@
-﻿  main_file.cpp
-C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\shared\minwindef.h(130,1): warning C4005: "APIENTRY": ponowna definicja makra
-E:\grafika\projekt\pacman-3d\glfw\include\GLFW\glfw3.h(123): message : zobacz poprzednią definicję „APIENTRY”
-E:\grafika\projekt\pacman-3d\main_file.cpp(86,12): warning C4244: "argument": konwersja z "time_t" do "unsigned int", możliwa utrata danych
-E:\grafika\projekt\pacman-3d\main_file.cpp(256,42): warning C4244: "argument": konwersja z "float" do "int", możliwa utrata danych
-E:\grafika\projekt\pacman-3d\main_file.cpp(256,28): warning C4244: "argument": konwersja z "float" do "int", możliwa utrata danych
-  pl_szkielet_03_win.vcxproj -> E:\grafika\projekt\pacman-3d\Debug\pl_szkielet_03_win.exe
+﻿C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160\Microsoft.CppBuild.targets(513,5): warning MSB8028: Katalog pośredni (Debug\) zawiera pliki udostępnione z innego projektu (pl_szkielet_03_win.vcxproj). Może to spowodować niepoprawne zachowanie podczas oczyszczania i ponownej kompilacji.
+  coin.cpp
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\shared\minwindef.h(130,1): warning C4005: "APIENTRY": ponowna definicja makra
+C:\Users\gabwa\Desktop\Files\Studia\SEM4\GKiW\Projekt\new\pacman-3d — kopia\glfw\include\GLFW\glfw3.h(123): message : zobacz poprzednią definicję „APIENTRY”
+C:\Users\gabwa\Desktop\Files\Studia\SEM4\GKiW\Projekt\new\pacman-3d — kopia\coin.cpp(31,20): warning C4018: "<": niezgodność typu ze znakiem/bez znaku
+C:\Users\gabwa\Desktop\Files\Studia\SEM4\GKiW\Projekt\new\pacman-3d — kopia\coin.cpp(43,20): warning C4018: "<": niezgodność typu ze znakiem/bez znaku
+C:\Users\gabwa\Desktop\Files\Studia\SEM4\GKiW\Projekt\new\pacman-3d — kopia\coin.cpp(46,21): warning C4018: "<": niezgodność typu ze znakiem/bez znaku
+C:\Users\gabwa\Desktop\Files\Studia\SEM4\GKiW\Projekt\new\pacman-3d — kopia\coin.cpp(53,82): warning C4244: "argument": konwersja z "float" do "const unsigned int", możliwa utrata danych
+C:\Users\gabwa\Desktop\Files\Studia\SEM4\GKiW\Projekt\new\pacman-3d — kopia\coin.cpp(53,91): warning C4244: "argument": konwersja z "float" do "const unsigned int", możliwa utrata danych
+C:\Users\gabwa\Desktop\Files\Studia\SEM4\GKiW\Projekt\new\pacman-3d — kopia\coin.cpp(55,11): warning C4244: "argument": konwersja z "float" do "const unsigned int", możliwa utrata danych
+C:\Users\gabwa\Desktop\Files\Studia\SEM4\GKiW\Projekt\new\pacman-3d — kopia\coin.cpp(55,20): warning C4244: "argument": konwersja z "float" do "const unsigned int", możliwa utrata danych
+C:\Users\gabwa\Desktop\Files\Studia\SEM4\GKiW\Projekt\new\pacman-3d — kopia\coin.cpp(55,67): warning C4244: "argument": konwersja z "float" do "const unsigned int", możliwa utrata danych
+C:\Users\gabwa\Desktop\Files\Studia\SEM4\GKiW\Projekt\new\pacman-3d — kopia\coin.cpp(55,76): warning C4244: "argument": konwersja z "float" do "const unsigned int", możliwa utrata danych
+C:\Users\gabwa\Desktop\Files\Studia\SEM4\GKiW\Projekt\new\pacman-3d — kopia\coin.cpp(78,18): warning C4244: "argument": konwersja z "int" do "float", możliwa utrata danych
+C:\Users\gabwa\Desktop\Files\Studia\SEM4\GKiW\Projekt\new\pacman-3d — kopia\coin.cpp(78,15): warning C4244: "argument": konwersja z "int" do "float", możliwa utrata danych
+  creeper.cpp
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\shared\minwindef.h(130,1): warning C4005: "APIENTRY": ponowna definicja makra
+C:\Users\gabwa\Desktop\Files\Studia\SEM4\GKiW\Projekt\new\pacman-3d — kopia\glfw\include\GLFW\glfw3.h(123): message : zobacz poprzednią definicję „APIENTRY”
+C:\Users\gabwa\Desktop\Files\Studia\SEM4\GKiW\Projekt\new\pacman-3d — kopia\creeper.cpp(31,20): warning C4018: "<": niezgodność typu ze znakiem/bez znaku
+C:\Users\gabwa\Desktop\Files\Studia\SEM4\GKiW\Projekt\new\pacman-3d — kopia\creeper.cpp(43,20): warning C4018: "<": niezgodność typu ze znakiem/bez znaku
+C:\Users\gabwa\Desktop\Files\Studia\SEM4\GKiW\Projekt\new\pacman-3d — kopia\creeper.cpp(46,21): warning C4018: "<": niezgodność typu ze znakiem/bez znaku
+  cube.cpp
+  ghost.cpp
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\shared\minwindef.h(130,1): warning C4005: "APIENTRY": ponowna definicja makra
+C:\Users\gabwa\Desktop\Files\Studia\SEM4\GKiW\Projekt\new\pacman-3d — kopia\glfw\include\GLFW\glfw3.h(123): message : zobacz poprzednią definicję „APIENTRY”
+C:\Users\gabwa\Desktop\Files\Studia\SEM4\GKiW\Projekt\new\pacman-3d — kopia\ghost.cpp(31,20): warning C4018: "<": niezgodność typu ze znakiem/bez znaku
+C:\Users\gabwa\Desktop\Files\Studia\SEM4\GKiW\Projekt\new\pacman-3d — kopia\ghost.cpp(43,20): warning C4018: "<": niezgodność typu ze znakiem/bez znaku
+C:\Users\gabwa\Desktop\Files\Studia\SEM4\GKiW\Projekt\new\pacman-3d — kopia\ghost.cpp(46,21): warning C4018: "<": niezgodność typu ze znakiem/bez znaku
+  lodepng.cpp
+  main_file.cpp
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\shared\minwindef.h(130,1): warning C4005: "APIENTRY": ponowna definicja makra
+C:\Users\gabwa\Desktop\Files\Studia\SEM4\GKiW\Projekt\new\pacman-3d — kopia\glfw\include\GLFW\glfw3.h(123): message : zobacz poprzednią definicję „APIENTRY”
+C:\Users\gabwa\Desktop\Files\Studia\SEM4\GKiW\Projekt\new\pacman-3d — kopia\main_file.cpp(86,12): warning C4244: "argument": konwersja z "time_t" do "unsigned int", możliwa utrata danych
+C:\Users\gabwa\Desktop\Files\Studia\SEM4\GKiW\Projekt\new\pacman-3d — kopia\main_file.cpp(256,42): warning C4244: "argument": konwersja z "float" do "int", możliwa utrata danych
+C:\Users\gabwa\Desktop\Files\Studia\SEM4\GKiW\Projekt\new\pacman-3d — kopia\main_file.cpp(256,28): warning C4244: "argument": konwersja z "float" do "int", możliwa utrata danych
+  model.cpp
+  shaderprogram.cpp
+  sphere.cpp
+  teapot.cpp
+  torus.cpp
+  wall.cpp
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\shared\minwindef.h(130,1): warning C4005: "APIENTRY": ponowna definicja makra
+C:\Users\gabwa\Desktop\Files\Studia\SEM4\GKiW\Projekt\new\pacman-3d — kopia\glfw\include\GLFW\glfw3.h(123): message : zobacz poprzednią definicję „APIENTRY”
+  Generowanie kodu...
+  pl_szkielet_03_win.vcxproj -> C:\Users\gabwa\Desktop\Files\Studia\SEM4\GKiW\Projekt\new\pacman-3d — kopia\Debug\pacman-3d.exe

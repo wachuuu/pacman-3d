@@ -219,14 +219,14 @@ void drawScene(GLFWwindow* window) {
 	move();
 	ghost.move();
 
-	spLambertTextured->use();
-	glUniformMatrix4fv(spLambertTextured->u("P"), 1, false, glm::value_ptr(P));
-	glUniformMatrix4fv(spLambertTextured->u("V"), 1, false, glm::value_ptr(V));
+	myShader->use();
+	glUniformMatrix4fv(myShader->u("P"), 1, false, glm::value_ptr(P));
+	glUniformMatrix4fv(myShader->u("V"), 1, false, glm::value_ptr(V));
 
-	glUniform4fv(spLambertTextured->u("lpos1"), 1, glm::value_ptr(lightPosition1));
-	glUniform4fv(spLambertTextured->u("lpos2"), 1, glm::value_ptr(lightPosition2));
-	glUniform4fv(spLambertTextured->u("lpos3"), 1, glm::value_ptr(lightPosition3));
-	glUniform4fv(spLambertTextured->u("lpos4"), 1, glm::value_ptr(lightPosition4));
+	glUniform4fv(myShader->u("lpos1"), 1, glm::value_ptr(lightPosition1));
+	glUniform4fv(myShader->u("lpos2"), 1, glm::value_ptr(lightPosition2));
+	glUniform4fv(myShader->u("lpos3"), 1, glm::value_ptr(lightPosition3));
+	glUniform4fv(myShader->u("lpos4"), 1, glm::value_ptr(lightPosition4));
 
 	wallSegment.drawMap(map);
 	creeper.drawModel();

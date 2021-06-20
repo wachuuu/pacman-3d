@@ -3,3 +3,4 @@ C:\Users\stach\Desktop\projekt\pacman-3d\Debug\pl_szkielet_03_win.pdb
 C:\Users\gabwa\Desktop\Files\Studia\SEM4\GKiW\Projekt\new\pacman-3d\Debug\pl_szkielet_03_win.exe
 E:\grafika\projekt\pacman-3d\Debug\pl_szkielet_03_win.exe
 E:\grafika\projekt\pacman-3d\Debug\pl_szkielet_03_win.pdb
+C:\Users\gabwa\Desktop\Files\Studia\SEM4\GKiW\Projekt\new\pacman-3d — kopia\Debug\pacman-3d.exe
