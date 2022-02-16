@@ -1,2 +1,2 @@
 # Pacman 3D
-##### work in progress
+OpenGL Pacman 3D Game
